@@ -19,6 +19,7 @@ pom.xml
 .lib/
 dist/*
 target/
+null/
 lib_managed/
 src_managed/
 project/boot/
