@@ -1,4 +1,4 @@
-# HTWG_SE_ConnectFour
+# HTWG_SA_ConnectFour
 [![Build Status](https://travis-ci.org/herrqian/HTWG_SA_ConnectFour.svg?branch=master)](https://travis-ci.org/herrqian/HTWG_SA_ConnectFour)
 
 [![Coverage Status](https://coveralls.io/repos/github/herrqian/HTWG_SA_ConnectFour/badge.svg)](https://coveralls.io/github/herrqian/HTWG_SA_ConnectFour)
