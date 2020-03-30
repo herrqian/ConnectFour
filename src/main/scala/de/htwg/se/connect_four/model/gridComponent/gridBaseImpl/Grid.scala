@@ -14,9 +14,11 @@ case class Grid(cells: Matrix[Cell]) extends GridInterface {
   def col(col:Int):Field=Field(cells.rows.map(row=>row(col)))
 
   def link_diagonal(row:Int, col:Int):Field = {
-    var mrow = row
-    var mcol = col
+    val mrow = row
+    val mcol = col
     val mvec = ArrayBuffer[Cell]()
+
+/*
     while (mrow < cells.row - 1 && mcol > 0) {
       mrow = mrow + 1
       mcol = mcol - 1
@@ -26,24 +28,56 @@ case class Grid(cells: Matrix[Cell]) extends GridInterface {
       mrow = mrow - 1
       mcol = mcol + 1
     }
+*/
+    //while in recursive function
+    left_diagonal_recOne(mrow,mcol)
+    left_diagonal_recTwo(mrow,mcol,mvec)
     Field(mvec.toVector)
+  }
+
+  def left_diagonal_recOne(row: Int, col: Int): Unit = {
+    if(row < cells.row - 1 && row > 0) left_diagonal_recOne(row+1,col-1)
+  }
+
+  def left_diagonal_recTwo(row: Int, col: Int, mvec: ArrayBuffer[Cell]): Unit = {
+    if(row >= 0 && col < cells.col){
+      mvec.append(cells.cell(row, col))
+      left_diagonal_recTwo(row-1,col+1, mvec)
+    }
   }
 
 
   def right_diagonal(row: Int, col: Int):Field = {
-    var mrow = row
-    var mcol = col
+    val mrow = row
+    val mcol = col
     val mvec = ArrayBuffer[Cell]()
-    while (mrow > 0 && mcol > 0) {
+/*
+     while (mrow > 0 && mcol > 0) {
       mrow = mrow - 1
       mcol = mcol - 1
     }
-    while (mrow < cells.row && mcol < cells.col) {
+
+     while (mrow < cells.row && mcol < cells.col) {
       mvec.append(cells.cell(mrow, mcol))
       mrow = mrow + 1
       mcol = mcol + 1
     }
+*/
+    //while in recursive function
+    right_diagonal_recOne(mrow,mcol)
+    right_diagonal_recTwo(mrow,mcol,mvec)
     Field(mvec.toVector)
+  }
+
+  def right_diagonal_recOne(row: Int, col: Int): Unit = {
+    if(row > 1 && col > 0) right_diagonal_recOne(row-1,col-1)
+  }
+
+  def right_diagonal_recTwo(row: Int, col: Int, mvec: ArrayBuffer[Cell]): Unit = {
+    if(row < cells.row && col < cells.col){
+      mvec.append(cells.cell(row, col))
+      right_diagonal_recTwo(row+1,col+1, mvec)
+    }
   }
 
   override def toString: String = cells.toString
