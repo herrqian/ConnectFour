@@ -7,12 +7,16 @@ import de.htwg.se.connect_four.ConnectFourModule
 import de.htwg.se.connect_four.model.fileIOComponent.FileIOInterface
 import de.htwg.se.connect_four.model.gridComponent.GridInterface
 import java.io._
-import scala.xml.PrettyPrinter
+
+import play.api.libs.json.JsValue
+
+import scala.xml.{Elem, NodeSeq, PrettyPrinter}
 
 
 class FileIO extends FileIOInterface {
+  var grid: GridInterface = null
+
   override def load: (GridInterface, Array[Boolean]) = {
-    var grid: GridInterface = null
     val file = scala.xml.XML.loadFile("grid.xml")
     val sizeAttr = (file \\ "grid" \ "@size")
     val player1 = (file \\ "grid" \ "@player1").text.toBoolean
@@ -26,6 +30,8 @@ class FileIO extends FileIOInterface {
       case _ => println("jjj")
     }
     val cellNodes = (file \\ "cell")
+    System.out.println(cellNodes)
+    /** TODO - check folding in SCALA, to convert the xml nodeSeq into flatmap and transverse */
     for (cell <- cellNodes) {
       val row: Int = (cell \ "@row").text.toInt
       val col: Int = (cell \ "@col").text.toInt
@@ -34,6 +40,16 @@ class FileIO extends FileIOInterface {
     }
     (grid, Array(player1,player2))
   }
+
+  /*
+
+  def set_grid(cellNodes: NodeSeq, prod:Int, index:Int): Unit = {
+    if(index != prod){
+
+    }
+  }
+
+  */
 
   override def save(grid: GridInterface, players: Array[Boolean]): Unit = {saveString(grid, players)}
 
@@ -62,4 +78,6 @@ class FileIO extends FileIOInterface {
       { grid.cell(row, col).value }
     </cell>
   }
+
+
 }
