@@ -61,12 +61,11 @@ class FileIO extends FileIOInterface {
       val cell = (json \\ "cell") (index)
       val value = (cell \ "value").as[Int]
       grid match {
-        case Some(g) => Some(g.set(row, col, value))
+        case Some(g) => set_grid(json, Some(g.set(row, col, value)), prod, index+1)
         case None => None
       }
-      System.out.println(grid)
-      set_grid(json,grid,prod,index+1)
-
+      /*System.out.println(grid)
+      set_grid(json,grid,prod,index+1)*/
     } else {
 
       grid
