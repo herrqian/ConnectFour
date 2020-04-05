@@ -13,10 +13,8 @@ import play.api.libs.json._
 import scala.io.Source
 
 class FileIO extends FileIOInterface {
-  var grid: GridInterface = null
 
-  override def load: (GridInterface, Array[Boolean]) = {
-
+  override def load: (Option[GridInterface], Array[Boolean]) = {
     val source: String = Source.fromFile("grid.json").getLines.mkString
     val json: JsValue = Json.parse(source)
     val size = (json \ "grid" \ "size").get.toString().toInt
@@ -25,13 +23,21 @@ class FileIO extends FileIOInterface {
     val player1 = (json \ "players" \ "Player1").get.toString().toBoolean
     val player2 = (json \ "players" \ "Player2").get.toString().toBoolean
     val injector = Guice.createInjector(new ConnectFourModule)
+/*
+
     size match {
-      case 42 => grid = injector.instance[GridInterface](Names.named("Grid Small"))
-      case 110 => grid = injector.instance[GridInterface](Names.named("Grid Middle"))
-      case 272 => grid = injector.instance[GridInterface](Names.named("Grid Huge"))
+      case 42 =>  Some(injector.instance[GridInterface](Names.named("Grid Small")))
+      case 110 => Some(injector.instance[GridInterface](Names.named("Grid Middle")))
+      case 272 => Some(injector.instance[GridInterface](Names.named("Grid Huge")))
       case _ => println("jjj")
     }
+*/
 
+    val grid:Option[GridInterface] = size match {
+      case 42 => set_grid(json,Some(injector.instance[GridInterface](Names.named("Grid Small"))),rows*cols,0)
+      case 110 => Some(injector.instance[GridInterface](Names.named("Grid Middle")))
+      case 272 => Some(injector.instance[GridInterface](Names.named("Grid Huge")))
+    }
 
     /*
      for (index <- 0 until rows * cols) {
@@ -43,11 +49,10 @@ class FileIO extends FileIOInterface {
     }
     */
 
-    set_grid(json, rows*cols,0)
     (grid, Array(player1, player2))
   }
 
-   def set_grid(json: JsValue, prod:Int, index:Int): Unit = {
+   def set_grid(json: JsValue, grid: Option[GridInterface],prod:Int, index:Int): Option[GridInterface] = {
 
     if(index != prod){
 
@@ -55,9 +60,16 @@ class FileIO extends FileIOInterface {
       val col = (json \\ "col") (index).as[Int]
       val cell = (json \\ "cell") (index)
       val value = (cell \ "value").as[Int]
-      grid = grid.set(row,col,value)
+      grid match {
+        case Some(g) => Some(g.set(row, col, value))
+        case None => None
+      }
       System.out.println(grid)
-      set_grid(json,prod,index+1)
+      set_grid(json,grid,prod,index+1)
+
+    } else {
+
+      grid
     }
 
   }

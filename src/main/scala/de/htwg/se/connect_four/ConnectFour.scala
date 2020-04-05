@@ -11,7 +11,7 @@ object ConnectFour {
     val injector = Guice.createInjector(new ConnectFourModule)
     val controller = new Controller(new Grid(6,7))
     val tui = new Tui(controller)
-  val gui = new SwingGui(controller)
+    val gui = new SwingGui(controller)
 
     def main(args: Array[String]): Unit = {
       tui.processInputLineStart()

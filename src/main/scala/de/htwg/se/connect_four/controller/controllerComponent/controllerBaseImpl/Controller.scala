@@ -27,7 +27,9 @@ class Controller @Inject() (var grid: GridInterface) extends ControllerInterface
 
   def load():Unit =  {
     val data = fileIo.load
-    grid = data._1
+    grid = data._1 match {
+      case Some(g) => g
+    }
     playerList = data._2
     publish(new CellChanged)
   }

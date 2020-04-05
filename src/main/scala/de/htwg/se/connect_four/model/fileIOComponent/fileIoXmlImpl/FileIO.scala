@@ -8,15 +8,13 @@ import de.htwg.se.connect_four.model.fileIOComponent.FileIOInterface
 import de.htwg.se.connect_four.model.gridComponent.GridInterface
 import java.io._
 
-import play.api.libs.json.JsValue
-
 import scala.xml.{Elem, NodeSeq, PrettyPrinter}
 
 
 class FileIO extends FileIOInterface {
-  var grid: GridInterface = null
+  var grid: Option[GridInterface] = None
 
-  override def load: (GridInterface, Array[Boolean]) = {
+  override def load: (Option[GridInterface], Array[Boolean]) = {
     val file = scala.xml.XML.loadFile("grid.xml")
     val sizeAttr = (file \\ "grid" \ "@size")
     val player1 = (file \\ "grid" \ "@player1").text.toBoolean
@@ -24,19 +22,23 @@ class FileIO extends FileIOInterface {
     val size = sizeAttr.text.toInt
     val injector = Guice.createInjector(new ConnectFourModule)
     size match {
-      case 42 => grid = injector.instance[GridInterface](Names.named("Grid Small"))
-      case 110 => grid = injector.instance[GridInterface](Names.named("Grid Middle"))
-      case 272 => grid = injector.instance[GridInterface](Names.named("Grid Huge"))
+      case 42 => grid = Some(injector.instance[GridInterface](Names.named("Grid Small")))
+      case 110 => grid = Some(injector.instance[GridInterface](Names.named("Grid Middle")))
+      case 272 => grid = Some(injector.instance[GridInterface](Names.named("Grid Huge")))
       case _ => println("jjj")
     }
     val cellNodes = (file \\ "cell")
     System.out.println(cellNodes)
     /** TODO - check folding in SCALA, to convert the xml nodeSeq into flatmap and transverse */
+
     for (cell <- cellNodes) {
       val row: Int = (cell \ "@row").text.toInt
       val col: Int = (cell \ "@col").text.toInt
       val value: Int = cell.text.trim.toInt
-      grid = grid.set(row, col, value)
+      grid = grid match {
+        case Some(g) => Some(g.set(row, col, value))
+        case None => None
+      }
     }
     (grid, Array(player1,player2))
   }
@@ -61,15 +63,16 @@ class FileIO extends FileIOInterface {
     pw.close()
   }
 
-  def toXml(interface: GridInterface, players: Array[Boolean])= {
-    <grid  size={(interface.rows * interface.cols).toString} player1={players.apply(0).toString} player2={players.apply(1).toString}>
+  def toXml(interface: GridInterface, players: Array[Boolean]) = {
+    <grid size={(interface.rows * interface.cols).toString} player1={players.apply(0).toString} player2={players.apply(1).toString}>
       {
-        for {
-          row <- 0 until interface.rows
-          col <- 0 until interface.cols
-        }
-          yield cellToXml(interface, row, col)
-      }
+      val rows = interface.rows
+      val cols = interface.cols
+      for {
+        row <- 0 until rows
+        col <- 0 until cols
+      } yield cellToXml(interface, row, col)}
+
     </grid>
   }
 
