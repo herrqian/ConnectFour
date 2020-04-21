@@ -15,14 +15,14 @@ case class Grid(cells: Matrix[Cell]) extends GridInterface {
   def col(col:Int):Field=Field(cells.rows.map(row=>row(col)))
 
   def link_diagonal(row:Int, col:Int):Field = {
-    val array = Array(row, col)
+    val array = left_diagonal_recOne(row, col)
     val mvec = ArrayBuffer[Cell]()
 
 
-    while (array(0)< cells.row - 1 && array(1) > 0) {
-      array(0) = array(0) + 1
-      array(1) = array(1) - 1
-    }
+//    while (array(0)< cells.row - 1 && array(1) > 0) {
+//      array(0) = array(0) + 1
+//      array(1) = array(1) - 1
+//    }
 
 /*
        while (mrow >= 0 && mcol < cells.col) {
@@ -37,9 +37,11 @@ case class Grid(cells: Matrix[Cell]) extends GridInterface {
   }
 
 
-  def left_diagonal_recOne(row: Int, col: Int): Unit = {
+  def left_diagonal_recOne(row: Int, col: Int): Array[Int] = {
     if(row < cells.row - 1 && col > 0) {
       left_diagonal_recOne(row+1,col-1)
+    } else {
+      Array(row, col)
     }
   }
 
@@ -52,14 +54,14 @@ case class Grid(cells: Matrix[Cell]) extends GridInterface {
 
 
   def right_diagonal(row: Int, col: Int):Field = {
-    val array = Array(row, col)
+    val array = right_diagonal_recOne(row,col)
     val mvec = ArrayBuffer[Cell]()
 
 
-     while (array(0)  > 0 && array(1) > 0) {
-       array(0) = array(0) - 1
-       array(1) = array(1) - 1
-    }
+//     while (array(0)  > 0 && array(1) > 0) {
+//       array(0) = array(0) - 1
+//       array(1) = array(1) - 1
+//    }
 
 
 /*
@@ -71,14 +73,15 @@ case class Grid(cells: Matrix[Cell]) extends GridInterface {
 */
 
     // while in recursive function
-    // right_diagonal_recOne(array(0),array(1))
     right_diagonal_recTwo(array(0) ,array(1),mvec)
     Field(mvec.toVector)
   }
 
-  def right_diagonal_recOne(row: Int, col: Int): Unit = {
+  def right_diagonal_recOne(row: Int, col: Int): Array[Int] = {
     if(row > 0 && col > 0) {
       right_diagonal_recOne(row = row - 1, col = col - 1)
+    } else {
+      Array(row, col)
     }
   }
 
