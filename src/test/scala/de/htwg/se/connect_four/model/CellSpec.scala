@@ -24,7 +24,6 @@ class CellSpec extends WordSpec with Matchers {
         nonEmptyCell.isSet should be(true)
       }
       "test set function" in {
-        nonEmptyCell = nonEmptyCell.set(2)
         nonEmptyCell.value should be(2)
       }
     }

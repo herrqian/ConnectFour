@@ -83,13 +83,13 @@ class Controller @Inject() (var grid: GridInterface) extends ControllerInterface
   }
 
   def checkWinner(row: Int, col: Int): Boolean = {
-    if (check4number(grid.col(col).getCells)) {
+    if (check4number(grid.col(col).cells)) {
       true
-    } else if (check4number(grid.row(row).getCells)) {
+    } else if (check4number(grid.row(row).cells)) {
       true
-    } else if (check4number(grid.link_diagonal(row, col).getCells)) {
+    } else if (check4number(grid.link_diagonal(row, col).cells)) {
       true
-    } else if (check4number(grid.right_diagonal(row, col).getCells)) {
+    } else if (check4number(grid.right_diagonal(row, col).cells)) {
       true
     } else {
       false

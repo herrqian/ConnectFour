@@ -9,7 +9,7 @@ class FieldSpec extends WordSpec with Matchers {
       field.cell(3) should be(Cell(5))
     }
     "getCells function is to test" in {
-      field.getCells should be(Vector(Cell(1), Cell(2),Cell(3),Cell(5)))
+      field.cells should be(Vector(Cell(1), Cell(2),Cell(3),Cell(5)))
     }
   }
 }

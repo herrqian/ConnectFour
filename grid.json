@@ -1,7 +1,7 @@
 {
   "players" : {
-    "Player1" : true,
-    "Player2" : false
+    "Player1" : false,
+    "Player2" : true
   },
   "grid" : {
     "size" : 42,
@@ -29,22 +29,22 @@
       "row" : 0,
       "col" : 3,
       "cell" : {
-        "value" : 2
-      }
-    }, {
-      "row" : 0,
-      "col" : 4,
-      "cell" : {
         "value" : 0
       }
     }, {
       "row" : 0,
-      "col" : 5,
+      "col" : 4,
       "cell" : {
         "value" : 0
       }
     }, {
       "row" : 0,
+      "col" : 5,
+      "cell" : {
+        "value" : 0
+      }
+    }, {
+      "row" : 0,
       "col" : 6,
       "cell" : {
         "value" : 0
@@ -71,7 +71,7 @@
       "row" : 1,
       "col" : 3,
       "cell" : {
-        "value" : 1
+        "value" : 0
       }
     }, {
       "row" : 1,
@@ -111,135 +111,135 @@
       }
     }, {
       "row" : 2,
+      "col" : 3,
+      "cell" : {
+        "value" : 0
+      }
+    }, {
+      "row" : 2,
+      "col" : 4,
+      "cell" : {
+        "value" : 0
+      }
+    }, {
+      "row" : 2,
+      "col" : 5,
+      "cell" : {
+        "value" : 0
+      }
+    }, {
+      "row" : 2,
+      "col" : 6,
+      "cell" : {
+        "value" : 0
+      }
+    }, {
+      "row" : 3,
+      "col" : 0,
+      "cell" : {
+        "value" : 0
+      }
+    }, {
+      "row" : 3,
+      "col" : 1,
+      "cell" : {
+        "value" : 0
+      }
+    }, {
+      "row" : 3,
+      "col" : 2,
+      "cell" : {
+        "value" : 0
+      }
+    }, {
+      "row" : 3,
+      "col" : 3,
+      "cell" : {
+        "value" : 0
+      }
+    }, {
+      "row" : 3,
+      "col" : 4,
+      "cell" : {
+        "value" : 0
+      }
+    }, {
+      "row" : 3,
+      "col" : 5,
+      "cell" : {
+        "value" : 0
+      }
+    }, {
+      "row" : 3,
+      "col" : 6,
+      "cell" : {
+        "value" : 0
+      }
+    }, {
+      "row" : 4,
+      "col" : 0,
+      "cell" : {
+        "value" : 0
+      }
+    }, {
+      "row" : 4,
+      "col" : 1,
+      "cell" : {
+        "value" : 0
+      }
+    }, {
+      "row" : 4,
+      "col" : 2,
+      "cell" : {
+        "value" : 1
+      }
+    }, {
+      "row" : 4,
+      "col" : 3,
+      "cell" : {
+        "value" : 0
+      }
+    }, {
+      "row" : 4,
+      "col" : 4,
+      "cell" : {
+        "value" : 0
+      }
+    }, {
+      "row" : 4,
+      "col" : 5,
+      "cell" : {
+        "value" : 0
+      }
+    }, {
+      "row" : 4,
+      "col" : 6,
+      "cell" : {
+        "value" : 0
+      }
+    }, {
+      "row" : 5,
+      "col" : 0,
+      "cell" : {
+        "value" : 0
+      }
+    }, {
+      "row" : 5,
+      "col" : 1,
+      "cell" : {
+        "value" : 0
+      }
+    }, {
+      "row" : 5,
+      "col" : 2,
+      "cell" : {
+        "value" : 1
+      }
+    }, {
+      "row" : 5,
       "col" : 3,
       "cell" : {
         "value" : 2
-      }
-    }, {
-      "row" : 2,
-      "col" : 4,
-      "cell" : {
-        "value" : 0
-      }
-    }, {
-      "row" : 2,
-      "col" : 5,
-      "cell" : {
-        "value" : 0
-      }
-    }, {
-      "row" : 2,
-      "col" : 6,
-      "cell" : {
-        "value" : 0
-      }
-    }, {
-      "row" : 3,
-      "col" : 0,
-      "cell" : {
-        "value" : 0
-      }
-    }, {
-      "row" : 3,
-      "col" : 1,
-      "cell" : {
-        "value" : 0
-      }
-    }, {
-      "row" : 3,
-      "col" : 2,
-      "cell" : {
-        "value" : 0
-      }
-    }, {
-      "row" : 3,
-      "col" : 3,
-      "cell" : {
-        "value" : 1
-      }
-    }, {
-      "row" : 3,
-      "col" : 4,
-      "cell" : {
-        "value" : 0
-      }
-    }, {
-      "row" : 3,
-      "col" : 5,
-      "cell" : {
-        "value" : 0
-      }
-    }, {
-      "row" : 3,
-      "col" : 6,
-      "cell" : {
-        "value" : 0
-      }
-    }, {
-      "row" : 4,
-      "col" : 0,
-      "cell" : {
-        "value" : 0
-      }
-    }, {
-      "row" : 4,
-      "col" : 1,
-      "cell" : {
-        "value" : 0
-      }
-    }, {
-      "row" : 4,
-      "col" : 2,
-      "cell" : {
-        "value" : 0
-      }
-    }, {
-      "row" : 4,
-      "col" : 3,
-      "cell" : {
-        "value" : 2
-      }
-    }, {
-      "row" : 4,
-      "col" : 4,
-      "cell" : {
-        "value" : 0
-      }
-    }, {
-      "row" : 4,
-      "col" : 5,
-      "cell" : {
-        "value" : 0
-      }
-    }, {
-      "row" : 4,
-      "col" : 6,
-      "cell" : {
-        "value" : 0
-      }
-    }, {
-      "row" : 5,
-      "col" : 0,
-      "cell" : {
-        "value" : 0
-      }
-    }, {
-      "row" : 5,
-      "col" : 1,
-      "cell" : {
-        "value" : 0
-      }
-    }, {
-      "row" : 5,
-      "col" : 2,
-      "cell" : {
-        "value" : 0
-      }
-    }, {
-      "row" : 5,
-      "col" : 3,
-      "cell" : {
-        "value" : 1
       }
     }, {
       "row" : 5,

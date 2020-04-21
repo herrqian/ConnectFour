@@ -7,7 +7,7 @@ case class Cell(value: Int) extends CellInterface {
   def isSet: Boolean = {
     value != 0
   }
-  def set(value: Int): Cell = Cell(value)
+  //def set(value: Int): Cell = Cell(value)
   override def toString: String = value.toString
 }
 
