@@ -10,7 +10,7 @@ class GridSpec extends WordSpec with Matchers {
     val tinyGrid = Grid(new Matrix[Cell](Vector(Vector(Cell(1)))))
     val aGrid = new Grid(4, 5)
     "toString function tested" in {
-      val a_string = "0 0 0 " + System.lineSeparator() + "0 0 0 " + System.lineSeparator()
+      val a_string = " 0 0 0" + System.lineSeparator() + " 0 0 0" + System.lineSeparator()
       grid.toString should be(a_string)
     }
     "give access to its Cells" in {
