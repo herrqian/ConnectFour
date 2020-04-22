@@ -24,5 +24,5 @@ trait GridInterface {
 trait CellInterface {
   def value:Int
   def isSet:Boolean
-  def set(value:Int): CellInterface
+//  def set(value:Int): CellInterface
 }

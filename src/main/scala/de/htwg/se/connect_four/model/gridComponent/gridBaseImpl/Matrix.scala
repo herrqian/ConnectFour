@@ -11,8 +11,11 @@ case class Matrix[T] (rows:Vector[Vector[T]]) {
 
   override def toString : String = {
     var stringVal = ""
-    rows.foreach{ x => x foreach{x => stringVal = stringVal + x + " "}
-      stringVal = stringVal + System.lineSeparator()}
+    rows.foreach(
+      row => {
+        stringVal += row.fold("")(_ + " " + _) + System.lineSeparator()
+      }
+    )
     stringVal
   }
 }

@@ -10,7 +10,7 @@ class GridSpec extends WordSpec with Matchers {
     val tinyGrid = Grid(new Matrix[Cell](Vector(Vector(Cell(1)))))
     val aGrid = new Grid(4, 5)
     "toString function tested" in {
-      val a_string = "0 0 0 " + System.lineSeparator() + "0 0 0 " + System.lineSeparator()
+      val a_string = " 0 0 0" + System.lineSeparator() + " 0 0 0" + System.lineSeparator()
       grid.toString should be(a_string)
     }
     "give access to its Cells" in {
@@ -18,6 +18,10 @@ class GridSpec extends WordSpec with Matchers {
       aGrid.cell(0, 1) should be(Cell(0))
       aGrid.cell(1, 0) should be(Cell(0))
       aGrid.cell(1, 1) should be(Cell(0))
+    }
+    "allow to get the row and col number" in {
+      aGrid.rows should be(4)
+      aGrid.cols should be(5)
     }
     "allow to set individual Cells and remain immutable" in {
       val changedGrid = aGrid.set(0, 0, 1)
@@ -42,7 +46,7 @@ class GridSpec extends WordSpec with Matchers {
       smallGrid.col(0).cell(1) should be(Cell(4))
       smallGrid.col(1).cell(0) should be(Cell(2))
       smallGrid.col(1).cell(1) should be(Cell(5))
-      smallGrid.col(2).getCells should be(Vector(Cell(3), Cell(6), Cell(9)))
+      smallGrid.col(2).cells should be(Vector(Cell(3), Cell(6), Cell(9)))
     }
     "have Field with the diagonal" in {
       smallGrid.link_diagonal(1,0).cell(0) should be(Cell(4))
@@ -51,10 +55,10 @@ class GridSpec extends WordSpec with Matchers {
       smallGrid.right_diagonal(1,0).cell(1) should be(Cell(8))
       smallGrid.right_diagonal(1,1).cell(0) should be(Cell(1))
       smallGrid.right_diagonal(1,1).cell(1) should be(Cell(5))
-      smallGrid.link_diagonal(1,1).getCells should be(Vector(Cell(7),Cell(5),Cell(3)))
-      smallGrid.right_diagonal(1,1).getCells should be(Vector(Cell(1), Cell(5), Cell(9)))
-      smallGrid.link_diagonal(1,0).getCells should be(Vector(Cell(4), Cell(2)))
-      smallGrid.right_diagonal(1,0).getCells should be(Vector(Cell(4), Cell(8)))
+      smallGrid.link_diagonal(1,1).cells should be(Vector(Cell(7),Cell(5),Cell(3)))
+      smallGrid.right_diagonal(1,1).cells should be(Vector(Cell(1), Cell(5), Cell(9)))
+      smallGrid.link_diagonal(1,0).cells should be(Vector(Cell(4), Cell(2)))
+      smallGrid.right_diagonal(1,0).cells should be(Vector(Cell(4), Cell(8)))
     }
   }
 }
