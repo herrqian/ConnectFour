@@ -19,6 +19,10 @@ class GridSpec extends WordSpec with Matchers {
       aGrid.cell(1, 0) should be(Cell(0))
       aGrid.cell(1, 1) should be(Cell(0))
     }
+    "allow to get the row and col number" in {
+      aGrid.rows should be(4)
+      aGrid.cols should be(5)
+    }
     "allow to set individual Cells and remain immutable" in {
       val changedGrid = aGrid.set(0, 0, 1)
       changedGrid.cell(0, 0) should be(Cell(1))
