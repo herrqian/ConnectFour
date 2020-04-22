@@ -1,7 +1,7 @@
 {
   "players" : {
-    "Player1" : false,
-    "Player2" : true
+    "Player1" : true,
+    "Player2" : false
   },
   "grid" : {
     "size" : 42,
@@ -191,7 +191,7 @@
       "row" : 4,
       "col" : 2,
       "cell" : {
-        "value" : 1
+        "value" : 0
       }
     }, {
       "row" : 4,
@@ -233,13 +233,13 @@
       "row" : 5,
       "col" : 2,
       "cell" : {
-        "value" : 1
+        "value" : 0
       }
     }, {
       "row" : 5,
       "col" : 3,
       "cell" : {
-        "value" : 2
+        "value" : 0
       }
     }, {
       "row" : 5,
