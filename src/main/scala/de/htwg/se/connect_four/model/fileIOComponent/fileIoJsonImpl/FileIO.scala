@@ -10,7 +10,9 @@ import de.htwg.se.connect_four.ConnectFourModule
 import de.htwg.se.connect_four.model.fileIOComponent.FileIOInterface
 import de.htwg.se.connect_four.model.gridComponent.{CellInterface, GridInterface}
 import play.api.libs.json._
+
 import scala.io.Source
+import scala.util.{Failure, Success, Try}
 
 class FileIO extends FileIOInterface {
 
@@ -23,20 +25,19 @@ class FileIO extends FileIOInterface {
     val player1 = (json \ "players" \ "Player1").get.toString().toBoolean
     val player2 = (json \ "players" \ "Player2").get.toString().toBoolean
     val injector = Guice.createInjector(new ConnectFourModule)
-/*
 
-    size match {
+    /*  size match {
       case 42 =>  Some(injector.instance[GridInterface](Names.named("Grid Small")))
       case 110 => Some(injector.instance[GridInterface](Names.named("Grid Middle")))
       case 272 => Some(injector.instance[GridInterface](Names.named("Grid Huge")))
       case _ => println("jjj")
     }
-*/
+    */
 
     val grid:Option[GridInterface] = size match {
-      case 42 => set_grid(json,Some(injector.instance[GridInterface](Names.named("Grid Small"))),rows*cols,0)
-      case 110 => Some(injector.instance[GridInterface](Names.named("Grid Middle")))
-      case 272 => Some(injector.instance[GridInterface](Names.named("Grid Huge")))
+      case 42 => set_grid(json, Some(injector.instance[GridInterface](Names.named("Grid Small"))), rows*cols,0)
+      case 110 => set_grid(json, Some(injector.instance[GridInterface](Names.named("Grid Middle"))), rows*cols, 0)
+      case 272 => set_grid(json, Some(injector.instance[GridInterface](Names.named("Grid Huge"))), rows*cols, 0)
     }
 
     /*
@@ -48,7 +49,6 @@ class FileIO extends FileIOInterface {
        grid = grid.set(row, col, value)
     }
     */
-
     (grid, Array(player1, player2))
   }
 
@@ -60,14 +60,13 @@ class FileIO extends FileIOInterface {
       val col = (json \\ "col") (index).as[Int]
       val cell = (json \\ "cell") (index)
       val value = (cell \ "value").as[Int]
-      grid match {
-        case Some(g) => set_grid(json, Some(g.set(row, col, value)), prod, index+1)
-        case None => None
-      }
-      /*System.out.println(grid)
-      set_grid(json,grid,prod,index+1)*/
-    } else {
+      Try(grid) match {
 
+        case Success(g) => set_grid(json, Some(g.get.set(row, col, value)), prod, index+1)
+        case Failure(_)  => None
+      }
+
+    } else {
       grid
     }
 
@@ -99,7 +98,7 @@ class FileIO extends FileIOInterface {
         "cols" -> JsNumber(interface.cols),
         "cells" -> Json.toJson(
           for {
-            row <- 0 until interface.rows;
+            row <- 0 until interface.rows
             col <- 0 until interface.cols
           } yield {
             Json.obj(

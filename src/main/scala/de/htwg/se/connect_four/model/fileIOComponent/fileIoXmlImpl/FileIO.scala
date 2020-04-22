@@ -7,10 +7,8 @@ import de.htwg.se.connect_four.ConnectFourModule
 import de.htwg.se.connect_four.model.fileIOComponent.FileIOInterface
 import de.htwg.se.connect_four.model.gridComponent.GridInterface
 import java.io._
-
-import PartialFunction._
 import scala.xml.{Elem, Node, PrettyPrinter}
-
+import scala.util.{Failure, Success, Try}
 
 class FileIO extends FileIOInterface {
 
@@ -20,8 +18,8 @@ class FileIO extends FileIOInterface {
     val sizeAttr = (file \\ "grid" \ "@size")
     val player1 = (file \\ "grid" \ "@player1").text.toBoolean
     val player2 = (file \\ "grid" \ "@player2").text.toBoolean
-    val cells_print = file \\ "cell" map { col => ((col \ "@col").text + (col \ "@row").text  -> col.text.trim) } toMap
-    val cells_list = cells_print.toList
+    val cells_map = file \\ "cell" map { col => ((col \ "@col").text + (col \ "@row").text  -> col.text.trim) } toMap
+    val cells_list = cells_map.toList
     val size = sizeAttr.text.toInt
     val injector = Guice.createInjector(new ConnectFourModule)
     val cellNodes = (file \\ "cell")
@@ -57,9 +55,10 @@ class FileIO extends FileIOInterface {
       val col: Int = cells_list.apply(index)._1.substring(0,1).toInt
       val row: Int = cells_list.apply(index)._1.substring(1,2).toInt
       val value: Int = cells_list.apply(index)._2.toInt
-      grid match {
-        case Some(g) => set_grid(cells_list, Some(g.set(row, col, value)), index +1)
-        case None => None
+      Try(grid) match {
+
+        case Success(g) => set_grid(cells_list, Some(g.get.set(row, col, value)), index +1)
+        case Failure(_)  => None
       }
 
     } else {
@@ -104,10 +103,5 @@ class FileIO extends FileIOInterface {
       { grid.cell(row, col).value }
     </cell>
   }
-
-  abstract class Try[T]
-  case class Success[T](elem: T) extends Try[T]
-  case class Failure(t: Throwable) extends Try[Nothing]
-
 
 }
