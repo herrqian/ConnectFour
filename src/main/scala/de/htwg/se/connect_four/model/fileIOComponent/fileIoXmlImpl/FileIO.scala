@@ -8,28 +8,31 @@ import de.htwg.se.connect_four.model.fileIOComponent.FileIOInterface
 import de.htwg.se.connect_four.model.gridComponent.GridInterface
 import java.io._
 
-import scala.xml.{Elem, NodeSeq, PrettyPrinter}
+import PartialFunction._
+import scala.xml.{Elem, Node, PrettyPrinter}
 
 
 class FileIO extends FileIOInterface {
-  var grid: Option[GridInterface] = None
+
 
   override def load: (Option[GridInterface], Array[Boolean]) = {
     val file = scala.xml.XML.loadFile("grid.xml")
     val sizeAttr = (file \\ "grid" \ "@size")
     val player1 = (file \\ "grid" \ "@player1").text.toBoolean
     val player2 = (file \\ "grid" \ "@player2").text.toBoolean
+    val cells_print = file \\ "cell" map { col => ((col \ "@col").text + (col \ "@row").text  -> col.text.trim) } toMap
+    val cells_list = cells_print.toList
     val size = sizeAttr.text.toInt
     val injector = Guice.createInjector(new ConnectFourModule)
-    size match {
-      case 42 => grid = Some(injector.instance[GridInterface](Names.named("Grid Small")))
-      case 110 => grid = Some(injector.instance[GridInterface](Names.named("Grid Middle")))
-      case 272 => grid = Some(injector.instance[GridInterface](Names.named("Grid Huge")))
-      case _ => println("jjj")
-    }
     val cellNodes = (file \\ "cell")
-    System.out.println(cellNodes)
-    /** TODO - check folding in SCALA, to convert the xml nodeSeq into flatmap and transverse */
+
+    val grid:Option[GridInterface] =  size match {
+      case 42 => set_grid(cells_list, Some(injector.instance[GridInterface](Names.named("Grid Small"))), 0)
+      case 110 => set_grid(cells_list, Some(injector.instance[GridInterface](Names.named("Grid Middle"))), 0)
+      case 272 => set_grid(cells_list, Some(injector.instance[GridInterface](Names.named("Grid Huge"))), 0)
+    }
+
+    /*
 
     for (cell <- cellNodes) {
       val row: Int = (cell \ "@row").text.toInt
@@ -40,18 +43,38 @@ class FileIO extends FileIOInterface {
         case None => None
       }
     }
+
+    */
     (grid, Array(player1,player2))
+
   }
 
-  /*
 
-  def set_grid(cellNodes: NodeSeq, prod:Int, index:Int): Unit = {
-    if(index != prod){
 
+  def set_grid(cells_list: List[(String,String)], grid: Option[GridInterface], index: Int): Option[GridInterface]  = {
+    if (index < cells_list.size) {
+
+      val col: Int = cells_list.apply(index)._1.substring(0,1).toInt
+      val row: Int = cells_list.apply(index)._1.substring(1,2).toInt
+      val value: Int = cells_list.apply(index)._2.toInt
+      grid match {
+        case Some(g) => set_grid(cells_list, Some(g.set(row, col, value)), index +1)
+        case None => None
+      }
+
+    } else {
+      grid
     }
   }
 
-  */
+  def linearize(node: Node): List[Node] = {
+
+    node :: node.child.flatMap {
+      case e: Elem => linearize(e)
+      case _ => Nil
+    }.toList
+
+  }
 
   override def save(grid: GridInterface, players: Array[Boolean]): Unit = {saveString(grid, players)}
 
@@ -81,6 +104,10 @@ class FileIO extends FileIOInterface {
       { grid.cell(row, col).value }
     </cell>
   }
+
+  abstract class Try[T]
+  case class Success[T](elem: T) extends Try[T]
+  case class Failure(t: Throwable) extends Try[Nothing]
 
 
 }
