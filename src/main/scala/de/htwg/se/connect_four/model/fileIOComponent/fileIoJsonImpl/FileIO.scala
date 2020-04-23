@@ -37,7 +37,7 @@ class FileIO extends FileIOInterface {
     val grid:Option[GridInterface] = size match {
       case 42 => set_grid(json, Some(injector.instance[GridInterface](Names.named("Grid Small"))), rows*cols,0)
       case 110 => set_grid(json, Some(injector.instance[GridInterface](Names.named("Grid Middle"))), rows*cols, 0)
-      case 272 => set_grid(json, Some(injector.instance[GridInterface](Names.named("Grid Huge"))), rows*cols, 0)
+      case 272 => set_grid(json, Some(injector.instance[GridInterface](Names.named("Grid Large"))), rows*cols, 0)
     }
 
     /*
