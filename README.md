@@ -1,8 +1,7 @@
 # HTWG_SA_ConnectFour
 [![Build Status](https://travis-ci.org/herrqian/HTWG_SA_ConnectFour.svg?branch=master)](https://travis-ci.org/herrqian/HTWG_SA_ConnectFour)
 
-[![Coverage Status](https://coveralls.io/repos/github/herrqian/HTWG_SA_ConnectFour/badge.svg)](https://coveralls.io/github/herrqian/HTWG_SA_ConnectFour)
-
+[![Coverage Status](https://coveralls.io/repos/github/herrqian/HTWG_SA_ConnectFour/badge.svg?branch=functional_style)](https://coveralls.io/github/herrqian/HTWG_SA_ConnectFour?branch=functional_style)
 
 This is a project developed in Scalalang by herrqian and Animesh for the lecture Software Engineering in Constance at the HTWG.
 
