@@ -17,8 +17,8 @@ class Controller @Inject() (var grid: GridInterface) extends ControllerInterface
   var gameStatus: Gamestate = Gamestate(StatelikeIDLE(GameStatus.IDLE))
   private val undoManager = new UndoManager
   val injector = Guice.createInjector(new ConnectFourModule)
-
   val fileIo = injector.instance[FileIOInterface]
+  val rowsCols = Map("gridrow" -> 6, "gridcol" -> 7)
 
   def save():Unit = {
     fileIo.save(grid, playerList)
@@ -34,31 +34,30 @@ class Controller @Inject() (var grid: GridInterface) extends ControllerInterface
     publish(new CellChanged)
   }
 
-  var gridrow = 6
-  var gridcol = 7
+ // val rowsCols = Map("Grid Small" -> (6,7), "Grid Middle" -> (10,11), "Grid Large" -> (16,17))
+
+  object Grids extends Enumeration{
+    type Grids = Value
+    val small = Value("Grid Small").toString
+    val middle = Value("Grid Middle").toString
+    val huge = Value("Grid Huge").toString
+  }
+
 
   def createEmptyGrid(s:String): Unit = {
     s match {
-      case "Grid Small" =>{
-        grid = injector.instance[GridInterface](Names.named(("Grid Small")))
-        gridrow = 6
-        gridcol = 7
-      }
-      case "Grid Middle" => {
-        grid = injector.instance[GridInterface](Names.named(("Grid Middle")))
-        gridrow = 10
-        gridcol = 11
-      }
-      case "Grid Huge" => {
-        grid = injector.instance[GridInterface](Names.named(("Grid Large")))
-        gridrow = 16
-        gridcol = 17
-      }
+      case Grids.small =>
+        grid = injector.instance[GridInterface](Names.named(Grids.small))
+      case Grids.middle =>
+        grid = injector.instance[GridInterface](Names.named(Grids.middle))
+      case Grids.huge =>
+        grid = injector.instance[GridInterface](Names.named(("Grid Large"))) //--??
     }
     resetPlayerList()
     gameStatus = Gamestate(StatelikeIDLE(GameStatus.IDLE))
     publish(new GridSizeChanged(s))
   }
+
 
   def setValueToBottom(column: Int): Unit = {
     val value = if (playerList(0)) {
@@ -145,7 +144,8 @@ class Controller @Inject() (var grid: GridInterface) extends ControllerInterface
 
   override def getGameStatus(): GameStatus = gameStatus.mystate.gameStatus
 
-  override def getGridRow: Int = gridrow
+  override def getGridRow: Int = grid.rows
 
-  override def getGridCol: Int = gridcol
+  override def getGridCol: Int = grid.cols
+
 }
