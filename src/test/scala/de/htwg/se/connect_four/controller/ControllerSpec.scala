@@ -6,31 +6,30 @@ import org.scalatest.{Matchers, WordSpec}
 class ControllerSpec extends WordSpec with Matchers {
   "a controller" when {
     "observed by an Observer" should {
-      val aGrid = new Grid(2, 3)
+      val aGrid = new Grid(6, 7)
       val controller = new Controller(aGrid)
-      val observer = new Observer() {
-        var updated: Boolean = false
 
-        def isUpdated: Boolean = updated
-
-        override def update(): Boolean = {
-          updated = true
-          true
-        }
+      "test the createEmptyGrid function" in {
+        controller.createEmptyGrid("Grid Small")
+        controller.grid should be(new Grid(6,7))
+        controller.createEmptyGrid("Grid Middle")
+        controller.grid should be(new Grid(10,11))
+        controller.createEmptyGrid("Grid Large")
+        controller.grid should be(new Grid(16,17))
       }
-      "test the checkWinner function" in {
-//        controller.checkWinner(0,0,1) should be(false)
-//        controller.checkWinner(1,0,1) should be(false)
+      "test the setValueToBottom function" in {
+        controller.setValueToBottom(0)
+        controller.grid.col(0).cell(15).value should be(1)
       }
       "test the getTrun function" in {
-        controller.getTurn(0) should be(true)
+        controller.getTurn(0) should be(false)
       }
       "test the changeTurn function" in {
         controller.changeTurn()
-        controller.getTurn(0) should be(false)
+        controller.getTurn(0) should be(true)
       }
       "test the currentPlayer function" in {
-        controller.currentPlayer() should be(2)
+        controller.currentPlayer() should be(1)
       }
     }
   }
