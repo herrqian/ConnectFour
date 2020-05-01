@@ -1,4 +1,6 @@
 package de.htwg.se.connect_four.controller
+import java.io.File
+
 import de.htwg.se.connect_four.controller.controllerComponent.controllerBaseImpl.Controller
 import de.htwg.se.connect_four.model.gridComponent.gridBaseImpl.Grid
 import de.htwg.se.connect_four.util.Observer
@@ -7,7 +9,7 @@ class ControllerSpec extends WordSpec with Matchers {
   "a controller" when {
     "observed by an Observer" should {
       val aGrid = new Grid(6, 7)
-      val controller = new Controller(aGrid)
+      var controller = new Controller(aGrid)
 
       "test the createEmptyGrid function" in {
         controller.createEmptyGrid("Grid Small")
@@ -30,6 +32,19 @@ class ControllerSpec extends WordSpec with Matchers {
       }
       "test the currentPlayer function" in {
         controller.currentPlayer() should be(1)
+      }
+      "test the undo and redo functions" in {
+        controller.undo
+        controller.grid.col(0).cell(15).value should be(0)
+        controller.redo
+        controller.grid.col(0).cell(15).value should be(1)
+      }
+      "test the save and load functions" in {
+        controller.save()
+        controller = new Controller(aGrid)
+        controller.load()
+        controller.grid.col(0).cell(15).value should be(1)
+        new File("grid.json").delete() should be(true)
       }
     }
   }
