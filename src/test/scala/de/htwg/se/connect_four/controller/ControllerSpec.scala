@@ -39,13 +39,6 @@ class ControllerSpec extends WordSpec with Matchers {
         controller.redo
         controller.grid.col(0).cell(15).value should be(1)
       }
-      "test the save and load functions" in {
-        controller.save()
-        controller = new Controller(aGrid)
-        controller.load()
-        controller.grid.col(0).cell(15).value should be(1)
-        new File("grid.json").exists() should be(true)
-      }
     }
   }
 }
