@@ -8,7 +8,7 @@ import de.htwg.se.connect_four.controller.controllerComponent.GameStatus.GameSta
 import de.htwg.se.connect_four.model.gridComponent.GridInterface
 import de.htwg.se.connect_four.model.gridComponent.gridBaseImpl.{Cell, Field, Matrix}
 import de.htwg.se.connect_four.util.UndoManager
-import de.htwg.se.connect_four.controller.controllerComponent.{CellChanged, ControllerInterface, GameStatus, GridChanged, GridSizeChanged, LoadError, WinEvent}
+import de.htwg.se.connect_four.controller.controllerComponent.{CellChanged, ControllerInterface, GameStatus, GridChanged, GridSizeChanged, LoadError, SaveError, WinEvent}
 import de.htwg.se.connect_four.model.fileIOComponent.FileIOInterface
 
 import scala.util.{Failure, Success}
@@ -23,8 +23,10 @@ class Controller @Inject()(var grid: GridInterface) extends ControllerInterface 
   val rowsCols = Map("gridrow" -> 6, "gridcol" -> 7)
 
   def save(): Unit = {
-    fileIo.save(grid, playerList)
-    publish(new GridChanged)
+    fileIo.save(grid, playerList) match {
+      case Success(_) => publish(new GridChanged)
+      case Failure(exception) => publish(new SaveError(exception.toString))
+    }
   }
 
   def load(): Unit = {
