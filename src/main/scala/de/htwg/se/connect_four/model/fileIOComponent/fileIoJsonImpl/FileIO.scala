@@ -15,41 +15,26 @@ import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
 class FileIO extends FileIOInterface {
+  final val FILE_NAME = "grid.json"
 
-  override def load: (Option[GridInterface], Array[Boolean]) = {
-    val source: String = Source.fromFile("grid.json").getLines.mkString
-    val json: JsValue = Json.parse(source)
-    val size = (json \ "grid" \ "size").get.toString().toInt
-    val rows = (json \ "grid" \ "rows").get.toString.toInt
-    val cols = (json \ "grid" \ "cols").get.toString.toInt
-    val player1 = (json \ "players" \ "Player1").get.toString().toBoolean
-    val player2 = (json \ "players" \ "Player2").get.toString().toBoolean
-    val injector = Guice.createInjector(new ConnectFourModule)
+  override def load: Try[(Option[GridInterface], Array[Boolean])] = {
+    Try {
+      val source: String = Source.fromFile(FILE_NAME).getLines.mkString
+      val json: JsValue = Json.parse(source)
+      val size = (json \ "grid" \ "size").get.toString().toInt
+      val rows = (json \ "grid" \ "rows").get.toString.toInt
+      val cols = (json \ "grid" \ "cols").get.toString.toInt
+      val player1 = (json \ "players" \ "Player1").get.toString().toBoolean
+      val player2 = (json \ "players" \ "Player2").get.toString().toBoolean
+      val injector = Guice.createInjector(new ConnectFourModule)
 
-    /*  size match {
-      case 42 =>  Some(injector.instance[GridInterface](Names.named("Grid Small")))
-      case 110 => Some(injector.instance[GridInterface](Names.named("Grid Middle")))
-      case 272 => Some(injector.instance[GridInterface](Names.named("Grid Huge")))
-      case _ => println("jjj")
+      val grid: Option[GridInterface] = size match {
+        case 42 => set_grid(json, Some(injector.instance[GridInterface](Names.named("Grid Small"))), rows * cols, 0)
+        case 110 => set_grid(json, Some(injector.instance[GridInterface](Names.named("Grid Middle"))), rows * cols, 0)
+        case 272 => set_grid(json, Some(injector.instance[GridInterface](Names.named("Grid Large"))), rows * cols, 0)
+      }
+      (grid, Array(player1, player2))
     }
-    */
-
-    val grid:Option[GridInterface] = size match {
-      case 42 => set_grid(json, Some(injector.instance[GridInterface](Names.named("Grid Small"))), rows*cols,0)
-      case 110 => set_grid(json, Some(injector.instance[GridInterface](Names.named("Grid Middle"))), rows*cols, 0)
-      case 272 => set_grid(json, Some(injector.instance[GridInterface](Names.named("Grid Large"))), rows*cols, 0)
-    }
-
-    /*
-     for (index <- 0 until rows * cols) {
-       val row = (json \\ "row") (index).as[Int]
-       val col = (json \\ "col") (index).as[Int]
-       val cell = (json \\ "cell") (index)
-       val value = (cell \ "value").as[Int]
-       grid = grid.set(row, col, value)
-    }
-    */
-    (grid, Array(player1, player2))
   }
 
    def set_grid(json: JsValue, grid: Option[GridInterface],prod:Int, index:Int): Option[GridInterface] = {
@@ -72,10 +57,12 @@ class FileIO extends FileIOInterface {
 
   }
 
-  override def save(grid: GridInterface, playerlist: Array[Boolean]): Unit = {
-    val pw = new PrintWriter(new File("grid.json"))
-    pw.write(Json.prettyPrint(toJson(grid, playerlist)))
-    pw.close()
+  override def save(grid: GridInterface, playerlist: Array[Boolean]): Try[Unit] = {
+    Try {
+      val pw = new PrintWriter(new File(FILE_NAME))
+      pw.write(Json.prettyPrint(toJson(grid, playerlist)))
+      pw.close()
+    }
   }
 
   implicit val cellWrites = new Writes[CellInterface] {

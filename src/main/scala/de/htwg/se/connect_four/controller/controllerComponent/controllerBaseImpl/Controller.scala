@@ -6,10 +6,12 @@ import net.codingwell.scalaguice.InjectorExtensions._
 import de.htwg.se.connect_four.ConnectFourModule
 import de.htwg.se.connect_four.controller.controllerComponent.GameStatus.GameStatus
 import de.htwg.se.connect_four.model.gridComponent.GridInterface
-import de.htwg.se.connect_four.model.gridComponent.gridBaseImpl.{Cell, Matrix, Field}
+import de.htwg.se.connect_four.model.gridComponent.gridBaseImpl.{Cell, Field, Matrix}
 import de.htwg.se.connect_four.util.UndoManager
-import de.htwg.se.connect_four.controller.controllerComponent.{CellChanged, ControllerInterface, GameStatus, GridChanged, GridSizeChanged, WinEvent}
+import de.htwg.se.connect_four.controller.controllerComponent.{CellChanged, ControllerInterface, GameStatus, GridChanged, GridSizeChanged, LoadError, WinEvent}
 import de.htwg.se.connect_four.model.fileIOComponent.FileIOInterface
+
+import scala.util.{Failure, Success}
 
 class Controller @Inject()(var grid: GridInterface) extends ControllerInterface {
 
@@ -26,13 +28,17 @@ class Controller @Inject()(var grid: GridInterface) extends ControllerInterface 
   }
 
   def load(): Unit = {
-    val data = fileIo.load
-    grid = data._1 match {
-      case Some(g) => g
+    fileIo.load match {
+      case Success(data) => {
+        grid = data._1 match {
+          case Some(g) => g
+        }
+        playerList = data._2
+        publish(new GridSizeChanged("new size"))
+        publish(new GridChanged)
+      }
+      case Failure(exception) => publish(new LoadError(exception.toString))
     }
-    playerList = data._2
-    publish(new GridSizeChanged("new size"))
-    publish(new GridChanged)
   }
 
   object Grids extends Enumeration {

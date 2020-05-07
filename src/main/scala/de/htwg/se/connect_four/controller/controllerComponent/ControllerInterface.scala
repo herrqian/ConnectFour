@@ -49,3 +49,7 @@ class GridSizeChanged(size: String) extends Event
 class WinEvent(val winner: Int) extends Event
 
 class GridChanged extends Event
+
+class LoadError(val e:String) extends Event
+
+class SaveError(val e:String) extends Event
