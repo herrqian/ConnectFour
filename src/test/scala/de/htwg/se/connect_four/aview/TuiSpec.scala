@@ -14,7 +14,7 @@ class TuiSpec extends WordSpec with Matchers {
         controller.grid should be(new Grid(6,7))
         tui.processInputLine("n middle")
         controller.grid should be(new Grid(10,11))
-        tui.processInputLine("n huge")
+        tui.processInputLine("n large")
         controller.grid should be(new Grid(16,17))
       }
       "input i1 will insert a value to column 1" in {

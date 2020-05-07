@@ -2,7 +2,7 @@ package de.htwg.se.connect_four.aview.gui
 
 import scala.swing._
 import scala.swing.event._
-import de.htwg.se.connect_four.controller.controllerComponent.{CellChanged, ControllerInterface, GridSizeChanged, WinEvent}
+import de.htwg.se.connect_four.controller.controllerComponent.{CellChanged, ControllerInterface, GridChanged, GridSizeChanged, WinEvent}
 
 class CellClicked(val row: Int, val column: Int) extends Event
 
@@ -47,7 +47,7 @@ class SwingGui(controller: ControllerInterface) extends Frame {
       mnemonic = Key.O
       contents += new MenuItem(Action("Small") { controller.createEmptyGrid("Grid Small") })
       contents += new MenuItem(Action("Middle") { controller.createEmptyGrid("Grid Middle") })
-      contents += new MenuItem(Action("Huge") { controller.createEmptyGrid("Grid Huge") })
+      contents += new MenuItem(Action("Large") { controller.createEmptyGrid("Grid Large") })
     }
   }
 
@@ -60,8 +60,9 @@ class SwingGui(controller: ControllerInterface) extends Frame {
       val col = controller.getGridCol
       resize(row,col)
     }
+    case event: GridChanged => redraw
     case event: CellChanged     => redraw
-    case event: WinEvent        => printWinner
+    case event: WinEvent        => printWinner(event.winner)
   }
 
   def resize(gridrow: Int, gridcol:Int) = {
@@ -82,8 +83,8 @@ class SwingGui(controller: ControllerInterface) extends Frame {
     repaint
   }
 
-  def printWinner = {
-    statusline.text = "Player " + controller.currentPlayer().toString + " won!"
+  def printWinner(winner:Int) = {
+    statusline.text = "Player " + winner.toString + " won!"
     repaint
   }
 }

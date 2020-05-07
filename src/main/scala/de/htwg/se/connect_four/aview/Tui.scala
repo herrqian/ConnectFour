@@ -1,6 +1,7 @@
 package de.htwg.se.connect_four.aview
 
-import de.htwg.se.connect_four.controller.controllerComponent.{CellChanged, ControllerInterface, GameStatus, GridSizeChanged, WinEvent}
+import de.htwg.se.connect_four.controller.controllerComponent.{CellChanged, ControllerInterface, GameStatus, GridChanged, GridSizeChanged, WinEvent}
+
 import scala.swing.Reactor
 import scala.io.StdIn
 
@@ -44,9 +45,9 @@ class Tui(controller: ControllerInterface) extends Reactor {
       case "n middle" =>
         controller.resetPlayerList()
         controller.createEmptyGrid("Grid Middle")
-      case "n huge" =>
+      case "n large" =>
         controller.resetPlayerList()
-        controller.createEmptyGrid("Grid Huge")
+        controller.createEmptyGrid("Grid Large")
       case "undo" => controller.undo
       case "redo" => controller.redo
       case "save" => controller.save
@@ -66,9 +67,13 @@ class Tui(controller: ControllerInterface) extends Reactor {
   }
 
   reactions += {
-    case event: CellChanged => printTui()
+    case event: CellChanged => {
+      printTui()
+      controller.checkWinner(event.row, event.col, event.stone)
+    }
     case event: GridSizeChanged => printTui()
-    case event: WinEvent => printWinner
+    case event: GridChanged => printTui()
+    case event: WinEvent => printWinner(event.winner)
   }
 
   def printTui(): Unit = {
@@ -76,10 +81,10 @@ class Tui(controller: ControllerInterface) extends Reactor {
     println(GameStatus.message(controller.getGameStatus()))
   }
 
-  def printWinner():Unit = {
+  def printWinner(winner: Int): Unit = {
     println(controller.gridToString)
-    if (controller.currentPlayer() == 1) {
-      printf("%s is the winner!\n",player1)
+    if (winner == 1) {
+      printf("%s is the winner!\n", player1)
     } else {
       printf("%s is the winner!\n", player2)
     }

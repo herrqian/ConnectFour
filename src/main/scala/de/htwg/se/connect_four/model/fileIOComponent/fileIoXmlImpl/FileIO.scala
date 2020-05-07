@@ -27,7 +27,7 @@ class FileIO extends FileIOInterface {
     val grid:Option[GridInterface] =  size match {
       case 42 => set_grid(cells_list, Some(injector.instance[GridInterface](Names.named("Grid Small"))), 0)
       case 110 => set_grid(cells_list, Some(injector.instance[GridInterface](Names.named("Grid Middle"))), 0)
-      case 272 => set_grid(cells_list, Some(injector.instance[GridInterface](Names.named("Grid Huge"))), 0)
+      case 272 => set_grid(cells_list, Some(injector.instance[GridInterface](Names.named("Grid Large"))), 0)
     }
 
     /*
