@@ -2,7 +2,7 @@ package de.htwg.se.connect_four.aview.gui
 
 import scala.swing._
 import scala.swing.event._
-import de.htwg.se.connect_four.controller.controllerComponent.{CellChanged, ControllerInterface, GridChanged, GridSizeChanged, LoadError, SaveError, WinEvent}
+import de.htwg.se.connect_four.controller.controllerComponent.{CellChanged, ControllerInterface, GridChanged, GridSizeChanged, LoadError, SaveError, SetError, WinEvent}
 
 class CellClicked(val row: Int, val column: Int) extends Event
 
@@ -65,6 +65,7 @@ class SwingGui(controller: ControllerInterface) extends Frame {
     case event: WinEvent        => printWinner(event.winner)
     case event: LoadError => Dialog.showMessage(contents.head,event.e, "LoadError")
     case event: SaveError => Dialog.showMessage(contents.head, event.e, "SaveError")
+    case event: SetError => Dialog.showMessage(contents.head, event.e,"SetError")
   }
 
   def resize(gridrow: Int, gridcol:Int) = {

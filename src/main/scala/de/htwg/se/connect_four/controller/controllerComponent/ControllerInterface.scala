@@ -53,3 +53,5 @@ class GridChanged extends Event
 class LoadError(val e:String) extends Event
 
 class SaveError(val e:String) extends Event
+
+class SetError(val e:String) extends Event

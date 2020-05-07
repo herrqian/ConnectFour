@@ -8,10 +8,10 @@ import de.htwg.se.connect_four.controller.controllerComponent.GameStatus.GameSta
 import de.htwg.se.connect_four.model.gridComponent.GridInterface
 import de.htwg.se.connect_four.model.gridComponent.gridBaseImpl.{Cell, Field, Matrix}
 import de.htwg.se.connect_four.util.UndoManager
-import de.htwg.se.connect_four.controller.controllerComponent.{CellChanged, ControllerInterface, GameStatus, GridChanged, GridSizeChanged, LoadError, SaveError, WinEvent}
+import de.htwg.se.connect_four.controller.controllerComponent.{CellChanged, ControllerInterface, GameStatus, GridChanged, GridSizeChanged, LoadError, SaveError, SetError, WinEvent}
 import de.htwg.se.connect_four.model.fileIOComponent.FileIOInterface
 
-import scala.util.{Failure, Success}
+import scala.util.{Failure, Success, Try}
 
 class Controller @Inject()(var grid: GridInterface) extends ControllerInterface {
 
@@ -72,17 +72,27 @@ class Controller @Inject()(var grid: GridInterface) extends ControllerInterface 
     } else {
       2
     }
-    val row = this.setValueR(grid.col(column), grid.cells.row - 1, column, value)
-    this.changeTurn()
-    publish(new CellChanged(row, column, value))
+    val row = this.setValueR(grid.col(column), grid.cells.row - 1, column, value) match {
+      case Success(row) => {
+        this.changeTurn()
+        publish(new CellChanged(row, column, value))
+      }
+      case Failure(exception) => publish(new SetError(exception.toString))
+    }
+
   }
 
-  private def setValueR(cells: Field, row: Int, col: Int, stone: Int): Int = {
-    if (cells.cell(row).equals(Cell(0))) {
-      undoManager.doStep(new SetCommand(row, col, stone, this))
-      row
-    } else {
-      setValueR(cells, row - 1, col, stone)
+  private def setValueR(cells: Field, row: Int, col: Int, stone: Int): Try[Int] = {
+    Try(cells.cell(row).equals(Cell(0))) match {
+      case Success(cond) => {
+        if (cond) {
+          undoManager.doStep(new SetCommand(row, col, stone, this))
+          Success(row)
+        } else {
+          setValueR(cells, row - 1, col, stone)
+        }
+      }
+      case Failure(exception) => Failure(exception)
     }
   }
 
