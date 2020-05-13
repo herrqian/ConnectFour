@@ -6,10 +6,12 @@ import net.codingwell.scalaguice.InjectorExtensions._
 import de.htwg.se.connect_four.ConnectFourModule
 import de.htwg.se.connect_four.controller.controllerComponent.GameStatus.GameStatus
 import de.htwg.se.connect_four.model.gridComponent.GridInterface
-import de.htwg.se.connect_four.model.gridComponent.gridBaseImpl.{Cell, Matrix, Field}
+import de.htwg.se.connect_four.model.gridComponent.gridBaseImpl.{Cell, Field, Matrix}
 import de.htwg.se.connect_four.util.UndoManager
-import de.htwg.se.connect_four.controller.controllerComponent.{CellChanged, ControllerInterface, GameStatus, GridChanged, GridSizeChanged, WinEvent}
+import de.htwg.se.connect_four.controller.controllerComponent.{CellChanged, ControllerInterface, GameStatus, GridChanged, GridSizeChanged, LoadError, SaveError, SetError, WinEvent}
 import de.htwg.se.connect_four.model.fileIOComponent.FileIOInterface
+
+import scala.util.{Failure, Success, Try}
 
 class Controller @Inject()(var grid: GridInterface) extends ControllerInterface {
 
@@ -21,18 +23,24 @@ class Controller @Inject()(var grid: GridInterface) extends ControllerInterface 
   val rowsCols = Map("gridrow" -> 6, "gridcol" -> 7)
 
   def save(): Unit = {
-    fileIo.save(grid, playerList)
-    publish(new GridChanged)
+    fileIo.save(grid, playerList) match {
+      case Success(_) => publish(new GridChanged)
+      case Failure(exception) => publish(new SaveError(exception.toString))
+    }
   }
 
   def load(): Unit = {
-    val data = fileIo.load
-    grid = data._1 match {
-      case Some(g) => g
+    fileIo.load match {
+      case Success(data) => {
+        grid = data._1 match {
+          case Some(g) => g
+        }
+        playerList = data._2
+        publish(new GridSizeChanged("new size"))
+        publish(new GridChanged)
+      }
+      case Failure(exception) => publish(new LoadError(exception.toString))
     }
-    playerList = data._2
-    publish(new GridSizeChanged("new size"))
-    publish(new GridChanged)
   }
 
   object Grids extends Enumeration {
@@ -64,17 +72,27 @@ class Controller @Inject()(var grid: GridInterface) extends ControllerInterface 
     } else {
       2
     }
-    val row = this.setValueR(grid.col(column), grid.cells.row - 1, column, value)
-    this.changeTurn()
-    publish(new CellChanged(row, column, value))
+    val row = this.setValueR(grid.col(column), grid.cells.row - 1, column, value) match {
+      case Success(row) => {
+        this.changeTurn()
+        publish(new CellChanged(row, column, value))
+      }
+      case Failure(exception) => publish(new SetError(exception.toString))
+    }
+
   }
 
-  private def setValueR(cells: Field, row: Int, col: Int, stone: Int): Int = {
-    if (cells.cell(row).equals(Cell(0))) {
-      undoManager.doStep(new SetCommand(row, col, stone, this))
-      row
-    } else {
-      setValueR(cells, row - 1, col, stone)
+  private def setValueR(cells: Field, row: Int, col: Int, stone: Int): Try[Int] = {
+    Try(cells.cell(row).equals(Cell(0))) match {
+      case Success(cond) => {
+        if (cond) {
+          undoManager.doStep(new SetCommand(row, col, stone, this))
+          Success(row)
+        } else {
+          setValueR(cells, row - 1, col, stone)
+        }
+      }
+      case Failure(exception) => Failure(exception)
     }
   }
 

@@ -1,6 +1,6 @@
 package de.htwg.se.connect_four.aview
 
-import de.htwg.se.connect_four.controller.controllerComponent.{CellChanged, ControllerInterface, GameStatus, GridChanged, GridSizeChanged, WinEvent}
+import de.htwg.se.connect_four.controller.controllerComponent.{CellChanged, ControllerInterface, GameStatus, GridChanged, GridSizeChanged, LoadError, SaveError, SetError, WinEvent}
 
 import scala.swing.Reactor
 import scala.io.StdIn
@@ -71,9 +71,12 @@ class Tui(controller: ControllerInterface) extends Reactor {
       printTui()
       controller.checkWinner(event.row, event.col, event.stone)
     }
-    case event: GridSizeChanged => printTui()
-    case event: GridChanged => printTui()
+    case _: GridSizeChanged => printTui()
+    case _: GridChanged => printTui()
     case event: WinEvent => printWinner(event.winner)
+    case event: LoadError => println("There is a LoadError: " + event.e)
+    case event: SaveError => println("There is a SaveError: " + event.e)
+    case event: SetError=>println("There is a SetError: " + event.e)
   }
 
   def printTui(): Unit = {
