@@ -23,6 +23,8 @@ trait ControllerInterface extends Publisher {
 
   def resetPlayerList(): Unit
 
+  def renamePlayer(newname:String):Unit
+
   def getGameStatus(): GameStatus
 
   def undo: Unit

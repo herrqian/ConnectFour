@@ -48,6 +48,10 @@ class Tui(controller: ControllerInterface) extends Reactor {
       case "save" => controller.save
       case "load" => controller.load
       case _ =>
+        if (input.startsWith("rename")) {
+          controller.renamePlayer(input.replaceAll("rename ",""))
+          return
+        }
         if (winnerCheck) {
           println("please start a new game")
           return

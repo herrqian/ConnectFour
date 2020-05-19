@@ -135,6 +135,9 @@ class Controller @Inject()(var grid: GridInterface) extends ControllerInterface 
     publish(new GridChanged)
   }
 
+  override def renamePlayer(newname:String): Unit = {
+    playerlist(0) = Player(newname)
+  }
   override def getGameStatus() = gameStatus
 
   override def getGridRow: Int = grid.rows
