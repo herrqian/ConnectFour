@@ -4,7 +4,7 @@ import com.google.inject.name.Names
 import com.google.inject.{Guice, Inject}
 import net.codingwell.scalaguice.InjectorExtensions._
 import de.htwg.se.connect_four.ConnectFourModule
-import de.htwg.se.connect_four.controller.controllerComponent.GameStatus.GameStatus
+import de.htwg.se.connect_four.controller.controllerComponent.GameStatus.{IDLE, WIN}
 import de.htwg.se.connect_four.model.gridComponent.GridInterface
 import de.htwg.se.connect_four.model.gridComponent.gridBaseImpl.{Cell, Field, Matrix}
 import de.htwg.se.connect_four.util.UndoManager
@@ -16,7 +16,7 @@ import scala.util.{Failure, Success, Try}
 class Controller @Inject()(var grid: GridInterface) extends ControllerInterface {
 
   var playerList = Array(true, false)
-  var gameStatus: Gamestate = Gamestate(StatelikeIDLE(GameStatus.IDLE))
+  var gameStatus = IDLE
   private val undoManager = new UndoManager
   val injector = Guice.createInjector(new ConnectFourModule)
   val fileIo = injector.instance[FileIOInterface]
@@ -61,7 +61,7 @@ class Controller @Inject()(var grid: GridInterface) extends ControllerInterface 
         grid = injector.instance[GridInterface](Names.named((Grids.large)))
     }
     resetPlayerList()
-    gameStatus = Gamestate(StatelikeIDLE(GameStatus.IDLE))
+    gameStatus = IDLE
     publish(new GridSizeChanged(s))
   }
 
@@ -72,10 +72,15 @@ class Controller @Inject()(var grid: GridInterface) extends ControllerInterface 
     } else {
       2
     }
-    val row = this.setValueR(grid.col(column), grid.cells.row - 1, column, value) match {
+    this.setValueR(grid.col(column), grid.cells.row - 1, column, value) match {
       case Success(row) => {
-        this.changeTurn()
-        publish(new CellChanged(row, column, value))
+        if (this.checkWinner(row, column, value)) {
+          gameStatus = WIN
+          publish(new WinEvent(value))
+        } else {
+          this.changeTurn()
+          publish(new CellChanged(row, column, value))
+        }
       }
       case Failure(exception) => publish(new SetError(exception.toString))
     }
@@ -96,9 +101,8 @@ class Controller @Inject()(var grid: GridInterface) extends ControllerInterface 
     }
   }
 
-  def checkWinner(row: Int, col: Int, stone: Int): Unit = {
-    if (grid.is4Stone(row, col, stone))
-      publish(new WinEvent(stone))
+  def checkWinner(row: Int, col: Int, stone: Int): Boolean = {
+    grid.is4Stone(row, col, stone)
   }
 
   def getTurn(playerNumber: Int): Boolean = {
@@ -133,7 +137,7 @@ class Controller @Inject()(var grid: GridInterface) extends ControllerInterface 
     publish(new GridChanged)
   }
 
-  override def getGameStatus(): GameStatus = gameStatus.mystate.gameStatus
+  override def getGameStatus() = gameStatus
 
   override def getGridRow: Int = grid.rows
 

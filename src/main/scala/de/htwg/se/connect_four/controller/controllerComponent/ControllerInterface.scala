@@ -10,7 +10,7 @@ trait ControllerInterface extends Publisher {
 
   def setValueToBottom(col: Int): Unit
 
-  def checkWinner(row: Int, col: Int, stone: Int): Unit
+  def checkWinner(row: Int, col: Int, stone: Int): Boolean
 
   def getTurn(playerNumber: Int): Boolean
 
