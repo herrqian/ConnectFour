@@ -67,10 +67,7 @@ class Tui(controller: ControllerInterface) extends Reactor {
   }
 
   reactions += {
-    case event: CellChanged => {
-      printTui()
-      controller.checkWinner(event.row, event.col, event.stone)
-    }
+    case _: CellChanged => printTui()
     case _: GridSizeChanged => printTui()
     case _: GridChanged => printTui()
     case event: WinEvent => printWinner(event.winner)
@@ -81,7 +78,7 @@ class Tui(controller: ControllerInterface) extends Reactor {
 
   def printTui(): Unit = {
     println(controller.gridToString)
-    println(GameStatus.message(controller.getGameStatus()))
+    println(controller.getGameStatus())
   }
 
   def printWinner(winner: Int): Unit = {
