@@ -1,14 +1,14 @@
-package main.scala
+package scala.module
 
 import com.google.inject.AbstractModule
 import com.google.inject.name.Names
 import main.scala.controller.ControllerInterface
 import main.scala.controller.controllerBaseImpl.Controller
 import main.scala.fileIOComponent.FileIOInterface
+import main.scala.fileIOComponent.fileIoJsonImpl.FileIO
 import main.scala.model.gridComponent.GridInterface
 import main.scala.model.gridComponent.gridAdvancedImpl.Grid
 import net.codingwell.scalaguice.ScalaModule
-import fileIOComponent.fileIoJsonImpl.FileIO
 
 
 class ConnectFourModule extends AbstractModule with ScalaModule {

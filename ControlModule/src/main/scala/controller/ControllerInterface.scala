@@ -1,8 +1,9 @@
 package main.scala.controller
 
-import PlayerModul.Player
 import main.scala.controller.GameStatus.GameStatus
 import main.scala.model.gridComponent.GridInterface
+import player.Player
+
 import scala.swing.Publisher
 
 trait ControllerInterface extends Publisher {

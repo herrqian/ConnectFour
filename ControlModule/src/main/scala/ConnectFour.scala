@@ -1,12 +1,12 @@
-package scala.de.se.ConnectFour
+package scala
 
 import com.google.inject.Guice
-import de.htwg.se.connect_four.aview.Tui
-import de.htwg.se.connect_four.aview.gui.SwingGui
-import de.htwg.se.connect_four.controller.controllerComponent.controllerBaseImpl.Controller
+import main.scala.aview.Tui
+import main.scala.aview.gui.SwingGui
+import main.scala.controller.controllerBaseImpl.Controller
 import main.scala.model.gridComponent.gridAdvancedImpl.Grid
 
-import scala.de.htwg.se.connect_four.module.ConnectFourModule
+import scala.module.ConnectFourModule
 
 object ConnectFour {
     val injector = Guice.createInjector(new ConnectFourModule)

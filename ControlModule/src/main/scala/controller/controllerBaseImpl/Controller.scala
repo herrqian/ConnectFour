@@ -1,17 +1,18 @@
 package main.scala.controller.controllerBaseImpl
 
-import PlayerModul.Player
 import com.google.inject.name.Names
 import com.google.inject.{Guice, Inject}
 import de.htwg.se.connect_four.util.UndoManager
-import main.scala.ConnectFourModule
 import main.scala.controller.{CellChanged, ControllerInterface, GridChanged, GridSizeChanged, LoadError, SaveError, SetError, WinEvent}
 import main.scala.model.gridComponent.GridInterface
 import main.scala.model.gridComponent.gridBaseImpl.{Cell, Field}
-import net.codingwell.scalaguice.InjectorExtensions._
 import main.scala.controller.GameStatus.{IDLE, WIN}
 import main.scala.fileIOComponent.FileIOInterface
+import main.scala.fileIOComponent.fileIoJsonImpl.FileIO
+import main.scala.model.gridComponent.gridAdvancedImpl.Grid
+import player.Player
 
+import scala.module.ConnectFourModule
 import scala.util.{Failure, Success, Try}
 
 class Controller @Inject()(var grid: GridInterface) extends ControllerInterface {
@@ -21,8 +22,8 @@ class Controller @Inject()(var grid: GridInterface) extends ControllerInterface 
   var playerlist = Array(player1, player2)
   var gameStatus = IDLE
   private val undoManager = new UndoManager
-  val injector = Guice.createInjector(new ConnectFourModule)
-  val fileIo = injector.instance[FileIOInterface]
+  //val injector = Guice.createInjector(new ConnectFourModule)
+  val fileIo = new FileIO
   val rowsCols = Map("gridrow" -> 6, "gridcol" -> 7)
 
   def save(): Unit = {
@@ -57,11 +58,11 @@ class Controller @Inject()(var grid: GridInterface) extends ControllerInterface 
   def createEmptyGrid(s: String): Unit = {
     s match {
       case Grids.small =>
-        grid = injector.instance[GridInterface](Names.named(Grids.small))
+        grid = new Grid(6,7)
       case Grids.middle =>
-        grid = injector.instance[GridInterface](Names.named(Grids.middle))
+        grid = new Grid(10,11)
       case Grids.large =>
-        grid = injector.instance[GridInterface](Names.named((Grids.large)))
+        grid = new Grid(16,17)
     }
     resetPlayerList()
     gameStatus = IDLE
