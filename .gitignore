@@ -33,4 +33,7 @@ project/.sbtserver
 # Scala-IDE specific
 .scala_dependencies
 
+# json and xml
+.json
+.xml
 
