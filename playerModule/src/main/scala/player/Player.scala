@@ -1,4 +1,4 @@
-package PlayerModul
+package player
 
 case class Player(name:String) extends PlayerInterface {
 

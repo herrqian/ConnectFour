@@ -1,8 +1,9 @@
-import PlayerModul.Player
+package player
+
 import org.scalatest.{Matchers, WordSpec}
 
 class PlayerSpec extends WordSpec with Matchers {
-  "A PlayerModul.Player" when {
+  "A player.Player" when {
     "new" should {
       val name ="Your Name"
       val player = Player(name)

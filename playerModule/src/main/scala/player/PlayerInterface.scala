@@ -1,4 +1,4 @@
-package PlayerModul
+package player
 
 trait PlayerInterface {
   val name:String
