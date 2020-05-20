@@ -4,17 +4,99 @@ version := "0.1"
 
 scalaVersion := "2.12.7"
 
-libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.5"
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+//
+//
+//
+//libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.5"
+//libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+//
+//libraryDependencies += "org.scala-lang.modules" % "scala-swing_2.12" % "2.0.3"
+//
+//libraryDependencies += "org.scala-lang.modules" % "scala-swing_2.12" % "2.0.1"
+//
+//libraryDependencies += "com.google.inject" % "guice" % "4.1.0"
+//
+//libraryDependencies += "net.codingwell" %% "scala-guice" % "4.1.0"
+//
+//libraryDependencies += "org.scala-lang.modules" % "scala-xml_2.12" % "1.0.6"
+//
+//libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.6"
 
-libraryDependencies += "org.scala-lang.modules" % "scala-swing_2.12" % "2.0.3"
+lazy val global = project
+  .in(file("."))
+  .aggregate(
+    player,
+    model,
+    fileio,
+    controlModule
+  )
 
-libraryDependencies += "org.scala-lang.modules" % "scala-swing_2.12" % "2.0.1"
+lazy val controlModule = project
+  .settings(name := "ControlModule",
+    libraryDependencies ++= mainModuleDependencies,
+    unmanagedBase := baseDirectory.value / "lib")
+  .dependsOn(player,model,fileio)
+  .aggregate(player,model,fileio)
 
-libraryDependencies += "com.google.inject" % "guice" % "4.1.0"
+lazy val model = project.settings(
+  name:="ModelModule",
+  libraryDependencies ++= mainModuleDependencies
+)
 
-libraryDependencies += "net.codingwell" %% "scala-guice" % "4.1.0"
+lazy val player = project
+  .settings(name:="PlayerModule",
+    libraryDependencies ++= mainModuleDependencies)
 
-libraryDependencies += "org.scala-lang.modules" % "scala-xml_2.12" % "1.0.6"
+lazy val fileio = project
+  .settings(name:="FileIOModule",
+    libraryDependencies ++= mainModuleDependencies)
+  .dependsOn(player,model)
+  .aggregate(player,model)
 
-libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.6"
+
+lazy val dependencies =
+  new {
+    val logbackV = "1.2.3"
+    val logstashV = "4.11"
+    val scalaLoggingV = "3.7.2"
+    val slf4jV = "1.7.25"
+    val typesafeConfigV = "1.3.1"
+    val pureconfigV = "0.8.0"
+    val monocleV = "1.4.0"
+    val akkaV = "2.5.6"
+    val scalatestV = "3.0.4"
+    val scalacheckV = "1.13.5"
+
+    val logback = "ch.qos.logback" % "logback-classic" % logbackV
+    val logstash = "net.logstash.logback" % "logstash-logback-encoder" % logstashV
+    val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % scalaLoggingV
+    val slf4j = "org.slf4j" % "jcl-over-slf4j" % slf4jV
+    val typesafeConfig = "com.typesafe" % "config" % typesafeConfigV
+    val akka = "com.typesafe.akka" %% "akka-stream" % akkaV
+    val monocleCore = "com.github.julien-truffaut" %% "monocle-core" % monocleV
+    val monocleMacro = "com.github.julien-truffaut" %% "monocle-macro" % monocleV
+    val pureconfig = "com.github.pureconfig" %% "pureconfig" % pureconfigV
+    val scalatest = "org.scalatest" %% "scalatest" % scalatestV
+    val scalacheck = "org.scalacheck" %% "scalacheck" % scalacheckV
+    val gguice = "com.google.inject" % "guice" % "4.1.0"
+  }
+
+lazy val mainModuleDependencies = Seq(
+  dependencies.logback,
+  dependencies.logstash,
+  dependencies.scalaLogging,
+  dependencies.slf4j,
+  dependencies.typesafeConfig,
+  dependencies.akka,
+  dependencies.gguice,
+  dependencies.scalatest % "test",
+  dependencies.scalacheck % "test",
+  "org.scalactic" %% "scalactic" % "3.0.5",
+  "org.scalatest" %% "scalatest" % "3.0.5" % "test",
+  "com.google.inject" % "guice" % "4.1.0",
+  "net.codingwell" %% "scala-guice" % "4.1.0",
+  "org.scala-lang.modules" % "scala-xml_2.12" % "1.0.6",
+  "com.typesafe.play" %% "play-json" % "2.6.6",
+  "org.scala-lang.modules" % "scala-swing_2.12" % "2.0.3",
+  "org.scalafx" %% "scalafx" % "11-R16"
+)
