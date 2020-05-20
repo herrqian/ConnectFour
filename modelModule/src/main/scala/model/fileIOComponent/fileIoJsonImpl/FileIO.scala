@@ -2,11 +2,11 @@ package main.scala.fileIOComponent.fileIoJsonImpl
 
 import java.io.{File, PrintWriter}
 
-import PlayerModul.Player
 import main.scala.fileIOComponent.FileIOInterface
 import main.scala.model.gridComponent.gridAdvancedImpl.Grid
 import main.scala.model.gridComponent.{CellInterface, GridInterface}
 import play.api.libs.json.{JsNumber, JsValue, Json, Writes}
+import player.Player
 
 import scala.io.Source
 import scala.util.{Failure, Success, Try}

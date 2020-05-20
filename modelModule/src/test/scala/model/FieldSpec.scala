@@ -1,4 +1,4 @@
-package main.scala
+package model
 
 import main.scala.model.gridComponent.gridBaseImpl.{Cell, Field}
 import org.scalatest.{Matchers, WordSpec}

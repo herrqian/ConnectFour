@@ -2,12 +2,13 @@ package main.scala.fileIOComponent.fileIoXmlImpl
 
 import java.io._
 
-import PlayerModul.{Player, PlayerInterface}
 import com.google.inject.Guice
 import com.google.inject.name.Names
 import main.scala.fileIOComponent.FileIOInterface
 import main.scala.model.gridComponent.GridInterface
 import main.scala.model.gridComponent.gridBaseImpl.Grid
+import player.Player
+
 import scala.util.{Failure, Success, Try}
 import scala.xml.{Elem, Node, PrettyPrinter}
 

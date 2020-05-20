@@ -1,7 +1,7 @@
 package main.scala.fileIOComponent
 
-import PlayerModul.Player
 import main.scala.model.gridComponent.GridInterface
+import player.Player
 
 import scala.util.Try
 

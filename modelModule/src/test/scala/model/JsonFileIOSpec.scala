@@ -1,11 +1,11 @@
-package main.scala
+package model
 
 import java.io.File
 
-import PlayerModul.Player
 import main.scala.fileIOComponent.fileIoJsonImpl.FileIO
 import main.scala.model.gridComponent.gridAdvancedImpl.Grid
 import org.scalatest.{Matchers, WordSpec}
+import player.Player
 
 import scala.util.{Failure, Success}
 
