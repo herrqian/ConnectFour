@@ -19,8 +19,6 @@
 //
 //libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.6"
 
-import sbt.Keys.unmanagedBase
-
 name := "connect four"
 organization in ThisBuild := "connect four in scala"
 scalaVersion in ThisBuild := "2.12.7"
