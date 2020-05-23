@@ -22,7 +22,7 @@ class JsonFileIOSpec extends WordSpec with Matchers {
       jsonio.load match {
         case Success(value) => {
           value._1 should be(Some(grid))
-          //value._2 should be(playerarray)
+          value._2 should be(playerarray)
         }
         case Failure(exception) => println(exception.toString)
       }

@@ -71,7 +71,7 @@ class Controller @Inject()(var grid: GridInterface) extends ControllerInterface 
 
 
   def setValueToBottom(column: Int): Unit = {
-    val value = if (playerlist(0).equals(player1)) {
+    val value = if (playerlist(0).name.equals(player1.name)) {
       1
     } else {
       2

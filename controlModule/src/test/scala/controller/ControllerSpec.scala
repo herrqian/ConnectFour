@@ -1,9 +1,9 @@
 package main.scala.controller
 
-import PlayerModul.Player
 import main.scala.controller.controllerBaseImpl.Controller
 import main.scala.model.gridComponent.gridBaseImpl.Grid
 import org.scalatest.{Matchers, WordSpec}
+import player.Player
 class ControllerSpec extends WordSpec with Matchers {
   "a controller" when {
     "observed by an Observer" should {
