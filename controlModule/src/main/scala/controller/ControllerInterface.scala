@@ -41,6 +41,7 @@ trait ControllerInterface extends Publisher {
 
   var grid: GridInterface
 
+  def gridToHTML:String
 }
 
 import scala.swing.event.Event

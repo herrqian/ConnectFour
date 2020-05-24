@@ -145,4 +145,5 @@ class Controller @Inject()(var grid: GridInterface) extends ControllerInterface 
 
   override def getGridCol: Int = grid.cols
 
+  override def gridToHTML: String = grid.toHTML
 }

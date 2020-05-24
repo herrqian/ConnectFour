@@ -93,6 +93,8 @@ case class Grid(cells: Matrix[Cell]) extends GridInterface {
   }
 
   override def toString: String = cells.toString
+
+  override def toHTML: String = "<p  style=\"font-family:'Lucida Console', monospace\"> " + toString.replace("\n","<br>").replace("  "," _") +"</p>"
 }
 
 object Grid {
