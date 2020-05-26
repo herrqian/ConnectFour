@@ -25,7 +25,7 @@ class HttpServer(controller: Controller) {
     } ~
       path("connectfour" / Segment) { command => {
         processInputLine(command)
-        complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>HTWG Connect Four</h1>" + command + controller.gridToHTML)
+        complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>HTWG Connect Four</h1>" + controller.currentPlayer() + ", it's your turn"  + controller.gridToHTML)
         )
       }
       }
