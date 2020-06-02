@@ -1,16 +1,14 @@
 package main.scala.aview
 
-import main.scala.controller.ControllerInterface
-import main.scala.controller.{CellChanged, GridChanged, GridSizeChanged, LoadError, SaveError, SetError, WinEvent}
-import scala.swing.Reactor
+import controller._
+
 import scala.io.StdIn
+import scala.swing.Reactor
 
 class Tui(controller: ControllerInterface) extends Reactor {
 
   listenTo(controller)
   var winnerCheck = false
-  var player1 = "Player1"
-  var player2 = "Player2"
   var input = ""
 
   def processInputLineStart(): Unit = {
@@ -36,13 +34,13 @@ class Tui(controller: ControllerInterface) extends Reactor {
       case "q" => println("The game exit")
       case "n small" =>
         controller.resetPlayerList()
-        controller.createEmptyGrid("Grid Small")
+        controller.createEmptyGrid("GridSmall")
       case "n middle" =>
         controller.resetPlayerList()
-        controller.createEmptyGrid("Grid Middle")
+        controller.createEmptyGrid("GridMiddle")
       case "n large" =>
         controller.resetPlayerList()
-        controller.createEmptyGrid("Grid Large")
+        controller.createEmptyGrid("GridLarge")
       case "undo" => controller.undo
       case "redo" => controller.redo
       case "save" => controller.save
@@ -69,7 +67,7 @@ class Tui(controller: ControllerInterface) extends Reactor {
     case _: CellChanged => printTui()
     case _: GridSizeChanged => printTui()
     case _: GridChanged => printTui()
-    case event: WinEvent => printWinner(event.winner)
+    case _: WinEvent => printWinner()
     case event: LoadError => println("There is a LoadError: " + event.e)
     case event: SaveError => println("There is a SaveError: " + event.e)
     case event: SetError=>println("There is a SetError: " + event.e)
@@ -80,13 +78,9 @@ class Tui(controller: ControllerInterface) extends Reactor {
     //println(controller.getGameStatus())
   }
 
-  def printWinner(winner: Int): Unit = {
+  def printWinner(): Unit = {
     println(controller.gridToString)
-    if (winner == 1) {
-      printf("%s is the winner!\n", player1)
-    } else {
-      printf("%s is the winner!\n", player2)
-    }
+    printf("%s is the winner!\n", controller.currentPlayer())
     winnerCheck = true
   }
 }
