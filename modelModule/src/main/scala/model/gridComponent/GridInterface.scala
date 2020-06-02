@@ -22,6 +22,8 @@ trait GridInterface {
   def right_diagonal(row: Int, col: Int): Field
 
   def is4Stone(row: Int, col: Int, n: Int): Boolean
+
+  def toHTML:String
 }
 
 trait CellInterface {

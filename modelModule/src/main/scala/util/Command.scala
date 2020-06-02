@@ -1,4 +1,4 @@
-package de.htwg.se.connect_four.util
+package util
 
 trait Command {
   def doStep:Unit

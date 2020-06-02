@@ -1,4 +1,4 @@
-package de.htwg.se.connect_four.util
+package util
 
 class UndoManager {
   private var undoStack: List[Command]= Nil

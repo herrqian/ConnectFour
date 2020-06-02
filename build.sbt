@@ -95,5 +95,5 @@ lazy val mainModuleDependencies = Seq(
   "com.typesafe.play" %% "play-json" % "2.6.6",
   "org.scala-lang.modules" % "scala-swing_2.12" % "2.0.3",
   "org.scalafx" %% "scalafx" % "11-R16",
-  "com.typesafe.akka" %% "akka-http" % "10.0.0"
+  "com.typesafe.akka" %% "akka-http" % "10.0.7"
 )
