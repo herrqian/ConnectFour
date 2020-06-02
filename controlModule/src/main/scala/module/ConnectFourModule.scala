@@ -2,7 +2,7 @@ package scala.module
 
 import com.google.inject.AbstractModule
 import com.google.inject.name.Names
-import main.scala.controller.ControllerInterface
+import controller.ControllerInterface
 import main.scala.controller.controllerBaseImpl.Controller
 import main.scala.fileIOComponent.FileIOInterface
 import main.scala.fileIOComponent.fileIoJsonImpl.FileIO

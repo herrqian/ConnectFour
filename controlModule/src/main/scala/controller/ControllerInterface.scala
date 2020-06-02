@@ -1,4 +1,4 @@
-package main.scala.controller
+package controller
 
 import main.scala.controller.GameStatus.GameStatus
 import main.scala.model.gridComponent.GridInterface
@@ -11,13 +11,9 @@ trait ControllerInterface extends Publisher {
 
   def setValueToBottom(col: Int): Unit
 
-  def checkWinner(row: Int, col: Int, stone: Int): Boolean
-
-  def getTurn(playerNumber: Int): Player
-
   def changeTurn(): Unit
 
-  def currentPlayer(): Player
+  def currentPlayer(): String
 
   def gridToString: String
 
@@ -39,7 +35,7 @@ trait ControllerInterface extends Publisher {
 
   def getGridCol: Int
 
-  var grid: GridInterface
+//  var grid: GridInterface
 
   def gridToHTML:String
 }
@@ -50,7 +46,7 @@ class CellChanged(val row: Int, val col: Int, val stone: Int) extends Event
 
 class GridSizeChanged(size: String) extends Event
 
-class WinEvent(val winner: Int) extends Event
+class WinEvent extends Event
 
 class GridChanged extends Event
 
