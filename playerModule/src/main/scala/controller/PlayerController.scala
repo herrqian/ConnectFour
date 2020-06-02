@@ -17,6 +17,14 @@ class PlayerController() {
     }
   }
 
+  def valueOfCurrentPlayer():Int = {
+    if (playerslist(0).equals(player1)) {
+      1
+    } else {
+      2
+    }
+  }
+
   def resetting = playerslist = Array(player1, player2)
 
   def reserve = playerslist = playerslist.reverse

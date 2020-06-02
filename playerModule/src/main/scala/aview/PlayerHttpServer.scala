@@ -30,7 +30,6 @@ class PlayerHttpServer(val controller:PlayerController) {
         } ~
       path("players"/"reserving") {
         controller.reserve
-        println(controller.playerslist)
         complete("")
       } ~
       path("players"/"resetting") {
@@ -42,6 +41,9 @@ class PlayerHttpServer(val controller:PlayerController) {
       path("players") {
         println("i got a get-request form client")
         complete(HttpEntity(ContentTypes.`application/json`, controller.playersToJson.toString))
+      }~
+      path("values") {
+        complete(controller.valueOfCurrentPlayer().toString)
       }
     },
   )

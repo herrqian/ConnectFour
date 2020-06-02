@@ -28,14 +28,6 @@ class Controller @Inject() extends ControllerInterface {
   implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
   def createEmptyGrid(s: String): Unit = {
-    //    s match {
-    //      case Grids.small =>
-    //        grid = new Grid(6,7)
-    //      case Grids.middle =>
-    //        grid = new Grid(10,11)
-    //      case Grids.large =>
-    //        grid = new Grid(16,17)
-    //    }
     val url = "http://localhost:11111/grid/createEmptyGrid/" + s
     Http().singleRequest(Post(url))
     this.resetPlayerList()
@@ -46,7 +38,7 @@ class Controller @Inject() extends ControllerInterface {
   def setValueToBottom(col:Int):Unit = {
     val url = "http://localhost:11111/valueSetting"
     val data = Json.obj("col" -> col,
-    "value"->1)
+    "value"->getValueOfPlayer)
     val response = Http().singleRequest(HttpRequest(
       method = HttpMethods.POST,
       uri = url,
@@ -55,10 +47,8 @@ class Controller @Inject() extends ControllerInterface {
     val jsonStringFuture = response.flatMap(r => Unmarshal(r.entity).to[String])
     val jsonString = Await.result(jsonStringFuture, Duration(1, TimeUnit.SECONDS))
     val json = Json.parse(jsonString)
-    println(json)
     (json \ "event").get.toString().replace("\"","") match {
       case "CellChanged" => {
-        println("aa")
         val row = (json \ "row").get.toString().toInt
         val col = (json \ "col").get.toString().toInt
         val value = (json \ "value").get.toString().toInt
@@ -68,6 +58,14 @@ class Controller @Inject() extends ControllerInterface {
       case "WIN" => publish(new WinEvent)
       case "SetError" => publish(new SaveError((json \ "error").get.toString()))
     }
+  }
+
+  def getValueOfPlayer:Int = {
+    val url = "http://localhost:22222/values"
+    val response = Http().singleRequest(Get(url))
+    val jsonStringFuture = response.flatMap(r => Unmarshal(r.entity).to[String])
+    val jsonString = Await.result(jsonStringFuture, Duration(1, TimeUnit.SECONDS))
+    jsonString.toInt
   }
 
   def getGrid:JsValue = {
@@ -123,7 +121,6 @@ class Controller @Inject() extends ControllerInterface {
 
   def changeTurn(): Unit = {
     val url = "http://localhost:22222/players/reserving"
-    println(url)
     Http().singleRequest(Post(url))
   }
 
@@ -133,7 +130,6 @@ class Controller @Inject() extends ControllerInterface {
     val jsonStringFuture = response.flatMap(r => Unmarshal(r.entity).to[String])
     val jsonString = Await.result(jsonStringFuture, Duration(1, TimeUnit.SECONDS))
     val json = Json.parse(jsonString)
-    println(json)
     (json \ "player1").get.toString().replace("\"","")
   }
 
