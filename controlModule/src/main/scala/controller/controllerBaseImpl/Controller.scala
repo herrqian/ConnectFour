@@ -1,5 +1,9 @@
 package main.scala.controller.controllerBaseImpl
 
+import java.util.concurrent.TimeUnit
+
+import akka.actor.ActorSystem
+import akka.stream.ActorMaterializer
 import com.google.inject.name.Names
 import com.google.inject.{Guice, Inject}
 import de.htwg.se.connect_four.util.UndoManager
@@ -12,8 +16,15 @@ import main.scala.fileIOComponent.fileIoJsonImpl.FileIO
 import main.scala.model.gridComponent.gridAdvancedImpl.Grid
 import player.Player
 
-import scala.module.ConnectFourModule
+import scala.concurrent.{Await, ExecutionContextExecutor}
 import scala.util.{Failure, Success, Try}
+import akka.http.scaladsl.client.RequestBuilding._
+import akka.http.scaladsl.model.HttpRequest
+import akka.http.scaladsl.unmarshalling._
+import akka.http.scaladsl.Http
+import play.api.libs.json.{JsValue, Json}
+
+import scala.concurrent.duration.Duration
 
 class Controller @Inject()(var grid: GridInterface) extends ControllerInterface {
 
@@ -24,7 +35,10 @@ class Controller @Inject()(var grid: GridInterface) extends ControllerInterface 
   private val undoManager = new UndoManager
   //val injector = Guice.createInjector(new ConnectFourModule)
   val fileIo = new FileIO
-  val rowsCols = Map("gridrow" -> 6, "gridcol" -> 7)
+
+  implicit val system: ActorSystem = ActorSystem("my-system")
+  implicit val materializer: ActorMaterializer = ActorMaterializer()
+  implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
   def save(): Unit = {
     fileIo.save(grid, playerlist) match {
@@ -47,28 +61,53 @@ class Controller @Inject()(var grid: GridInterface) extends ControllerInterface 
     }
   }
 
-  object Grids extends Enumeration {
-    type Grids = Value
-    val small = Value("Grid Small").toString
-    val middle = Value("Grid Middle").toString
-    val large = Value("Grid Large").toString
-  }
-
-
   def createEmptyGrid(s: String): Unit = {
-    s match {
-      case Grids.small =>
-        grid = new Grid(6,7)
-      case Grids.middle =>
-        grid = new Grid(10,11)
-      case Grids.large =>
-        grid = new Grid(16,17)
-    }
+    //    s match {
+    //      case Grids.small =>
+    //        grid = new Grid(6,7)
+    //      case Grids.middle =>
+    //        grid = new Grid(10,11)
+    //      case Grids.large =>
+    //        grid = new Grid(16,17)
+    //    }
+    val url = "http://localhost:11111/grid/createEmptyGrid/" + s
+    println(url)
+    Http().singleRequest(Post(url))
     resetPlayerList()
     gameStatus = IDLE
     publish(new GridSizeChanged(s))
   }
 
+  def getGrid:String = {
+    val url = "http://localhost:11111/grids"
+    val response = Http().singleRequest(Get(url))
+    val jsonStringFuture = response.flatMap(r => Unmarshal(r.entity).to[String])
+    val jsonString = Await.result(jsonStringFuture, Duration(1, TimeUnit.SECONDS))
+    val json = Json.parse(jsonString)
+    printToHTML(json)
+  }
+
+  def printToHTML(jsValue: JsValue):String = {
+    val rows = (jsValue \ "rows").get.toString.toInt
+    val cols = (jsValue \ "cols").get.toString.toInt
+    println(rows)
+    val cellsarray = Array.ofDim[Int](rows, cols)
+    for (index <- 0 until rows * cols) {
+      val row = (jsValue \\ "row") (index).as[Int]
+      val col = (jsValue \\ "col") (index).as[Int]
+      val cell = (jsValue \\ "cell") (index)
+      val value = (cell \ "value").as[Int]
+      cellsarray(row)(col) = value
+    }
+    var htmltext = ""
+
+    cellsarray.foreach(
+      row => {
+        htmltext += row.fold("<p style=\"font-family:'Lucida Console', monospace\">")(_ + " " + _)  + "</p>"+ System.lineSeparator()
+      }
+    )
+    htmltext
+  }
 
   def setValueToBottom(column: Int): Unit = {
     val value = if (playerlist(0).name.equals(player1.name)) {
@@ -136,14 +175,15 @@ class Controller @Inject()(var grid: GridInterface) extends ControllerInterface 
     publish(new GridChanged)
   }
 
-  override def renamePlayer(newname:String): Unit = {
+  override def renamePlayer(newname: String): Unit = {
     playerlist(0) = Player(newname)
   }
+
   override def getGameStatus() = gameStatus
 
   override def getGridRow: Int = grid.rows
 
   override def getGridCol: Int = grid.cols
 
-  override def gridToHTML: String = grid.toHTML
+  override def gridToHTML: String = getGrid
 }

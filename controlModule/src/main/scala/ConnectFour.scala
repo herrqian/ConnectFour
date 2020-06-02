@@ -5,7 +5,7 @@ import main.scala.aview.{HttpServer, Tui}
 import main.scala.aview.gui.SwingGui
 import main.scala.controller.controllerBaseImpl.Controller
 import main.scala.model.gridComponent.gridAdvancedImpl.Grid
-
+import aview.GridMain
 import scala.module.ConnectFourModule
 
 object ConnectFour {
@@ -14,6 +14,8 @@ object ConnectFour {
   val tui = new Tui(controller)
   //val gui = new SwingGui(controller)
   val webserver = new HttpServer(controller)
+
+  GridMain.main(Array())
 
   def main(args: Array[String]): Unit = {
     tui.processInputLineStart()

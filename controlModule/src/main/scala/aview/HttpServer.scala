@@ -21,11 +21,16 @@ class HttpServer(controller: Controller) {
       complete(HttpEntity(ContentTypes.`text/plain(UTF-8)`, "<h1>HTWG Connect Four</h1>"))
     }
     path("connectfour") {
-      complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>HTWG Connect Four</h1>" + controller.gridToHTML))
+      complete(HttpEntity(
+        ContentTypes.`text/html(UTF-8)`,
+        "<h1>HTWG Connect Four</h1>" + controller.gridToHTML
+      ))
     } ~
       path("connectfour" / Segment) { command => {
         processInputLine(command)
-        complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>HTWG Connect Four</h1>" + controller.currentPlayer() + ", it's your turn"  + controller.gridToHTML)
+        complete(
+          HttpEntity(ContentTypes.`text/html(UTF-8)`,
+            "<h1>HTWG Connect Four</h1>" + controller.currentPlayer() + ", it's your turn" + controller.gridToHTML)
         )
       }
       }
@@ -43,11 +48,11 @@ class HttpServer(controller: Controller) {
     input match {
       case "q" =>
       case "n small" =>
-        controller.createEmptyGrid("Grid Small")
+        controller.createEmptyGrid("GridSmall")
       case "n middle" =>
-        controller.createEmptyGrid("Grid Middle")
+        controller.createEmptyGrid("GridMiddle")
       case "n large" =>
-        controller.createEmptyGrid("Grid Large")
+        controller.createEmptyGrid("GridLarge")
       case "undo" => controller.undo
       case "redo" => controller.redo
       case "save" => controller.save
