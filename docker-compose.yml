@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  main:
+    image: main-sbt:v1
+    working_dir: controlModule/src/main/scala/ConnectFour.scala
+    depends_on:
+      - player
+      - grid
+    stdin_open: true
+  player:
+    image: player-sbt:v1
+    working_dir: playerModule/src/main/scala/aview/PlayerMain.scala
+    stdin_open: true
+  grid:
+    image: grid-sbt:v1
+    working_dir: modelModule/src/main/scala/aview/GridMain.scala
+    stdin_open: true
