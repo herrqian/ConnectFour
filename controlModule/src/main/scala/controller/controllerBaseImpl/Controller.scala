@@ -27,7 +27,7 @@ class Controller @Inject() extends ControllerInterface {
 
   def createEmptyGrid(s: String): Unit = {
     val url = "http://localhost:11111/grid/createEmptyGrid/" + s
-    Controller.postResponseFromUrl(url, null)
+    Controller.postNoResponseFromUrl(url)
     this.resetPlayerList()
     gameStatus = IDLE
     publish(new GridSizeChanged(s))
@@ -65,7 +65,6 @@ class Controller @Inject() extends ControllerInterface {
     val url = "http://localhost:11111/grids"
     val jsonString = Controller.getValueResponseFromUrl(url)
     Json.parse(jsonString)
-    //printToHTML(json)
   }
 
   def printToHTML(jsValue: JsValue):String = {
@@ -92,7 +91,7 @@ class Controller @Inject() extends ControllerInterface {
   def printToString(jsValue: JsValue):String = {
     val rows = (jsValue \ "rows").get.toString.toInt
     val cols = (jsValue \ "cols").get.toString.toInt
-    val cellsarray = Array.ofDim[Int](rows, cols)
+    val cellsarray: Array[Array[Int]] = Array.ofDim[Int](rows, cols)
     for (index <- 0 until rows * cols) {
       val row = (jsValue \\ "row") (index).as[Int]
       val col = (jsValue \\ "col") (index).as[Int]
@@ -110,9 +109,10 @@ class Controller @Inject() extends ControllerInterface {
     text
   }
 
+
   def changeTurn(): Unit = {
     val url = "http://localhost:22222/players/reserving"
-    Controller.postResponseFromUrl(url, null)
+    Controller.postNoResponseFromUrl(url)
   }
 
   def currentPlayer():String = {
@@ -124,7 +124,7 @@ class Controller @Inject() extends ControllerInterface {
 
   def resetPlayerList(): Unit = {
     val url = "http://localhost:22222/players/resetting"
-    Controller.postResponseFromUrl(url, null)
+    Controller.postNoResponseFromUrl(url)
   }
 
   def gridToString: String = printToString(getGrid)
@@ -132,13 +132,13 @@ class Controller @Inject() extends ControllerInterface {
   def gridToHTML: String = printToHTML(getGrid)
 
   def undo: Unit = {
-    Controller.postResponseFromUrl("http://localhost:11111/undo", null)
+    Controller.postNoResponseFromUrl("http://localhost:11111/undo")
     this.changeTurn()
     publish(new GridChanged)
   }
 
   def redo: Unit = {
-    Controller.postResponseFromUrl("http://localhost:11111/redo", null)
+    Controller.postNoResponseFromUrl("http://localhost:11111/redo")
     this.changeTurn()
     publish(new GridChanged)
   }
@@ -175,21 +175,20 @@ class Controller @Inject() extends ControllerInterface {
       Await.result(jsonStringFuture, Duration(1, TimeUnit.SECONDS))
     }
 
-
-    def postResponseFromUrl(url: String, @Nullable data: JsValue) : Future[HttpResponse] = {
-      if (data != null) {
+    def postResponseFromUrl(url: String, data: JsValue) : Future[HttpResponse] = {
+        println("yo")
         Http().singleRequest(HttpRequest(
           method = HttpMethods.POST,
           uri = url,
           entity = HttpEntity(ContentTypes.`application/json`, data.toString())
         ))
+    }
 
-      } else {
-        Http().singleRequest(HttpRequest(
-          method = HttpMethods.POST,
-          uri = url
-        ))
-      }
+    def postNoResponseFromUrl(url: String) : Future[HttpResponse] = {
+      Http().singleRequest(HttpRequest(
+        method = HttpMethods.POST,
+        uri = url
+      ))
     }
   }
 }
