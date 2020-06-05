@@ -16,7 +16,7 @@ object ConnectFour {
   //val gui = new SwingGui(controller)
   val webserver = new HttpServer(controller)
 
-  def main(args: Array[String]): Unit = {
+   def main(args: Array[String]): Unit = {
     tui.processInputLineStart()
     webserver.unbind
   }

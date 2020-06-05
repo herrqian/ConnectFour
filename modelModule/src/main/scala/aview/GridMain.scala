@@ -9,7 +9,7 @@ object GridMain {
   val httpserver = new GridHttpServer(gridcontroller)
   @volatile var shutdown = false
 
-  def main(args: Array[String]): Unit = {
+   def main(args: Array[String]): Unit = {
     println("http://localhost:11111" + " is open")
     while (!shutdown) {
       Thread.sleep(1000)
