@@ -1,3 +1,3 @@
-docker build ./PlayerModule -t connectfourplayer
-docker build ./modelModule -t connectfourmodel
-docker build ./ControlModule -t connectfourcontrol
+docker build ./PlayerModule -t player-sbt:latest
+docker build ./modelModule -t grid-sbt:latest
+docker build ./ControlModule -t main-sbt:latest
