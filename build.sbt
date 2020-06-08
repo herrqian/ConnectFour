@@ -34,7 +34,7 @@ lazy val controlModule = project
       case meta(_) => MergeStrategy.discard
       case x => MergeStrategy.first
     },
-    mainClass in assembly := Some("ConnectFour") ,
+    mainClass in assembly := Some("aview/ConnectFour") ,
 //    mainClass in (Compile, run) := Some("ConnectFour")
 
 
