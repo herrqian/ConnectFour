@@ -48,7 +48,7 @@ class PlayerHttpServer(val controller:PlayerController) {
     },
   )
 
-  val bindingFuture = Http().bindAndHandle(route, "localhost", 22222)
+  val bindingFuture = Http().bindAndHandle(route, "0.0.0.0", 22222)
 
   def unbind = {
     bindingFuture
