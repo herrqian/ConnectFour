@@ -29,7 +29,8 @@ class Controller @Inject() extends ControllerInterface {
   val playerHost =  "http://" + sys.env.getOrElse("PLAYER_HOST", "localhost:22222") + "/"
 
   def createEmptyGrid(s: String): Unit = {
-    val url = gridHost + "createEmptyGrid/" + s
+    val url = gridHost + "grid/createEmptyGrid/" + s
+    println(url)
     Controller.postNoResponseFromUrl(url)
     this.resetPlayerList()
     gameStatus = IDLE
@@ -148,6 +149,7 @@ class Controller @Inject() extends ControllerInterface {
 
   override def renamePlayer(newname: String): Unit = {
     val url = playerHost + "players/rename"
+    println(url)
     val data = Json.obj({"name" -> newname})
     Controller.postResponseFromUrl(url, data)
   }

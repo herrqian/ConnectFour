@@ -22,7 +22,8 @@ class PlayerHttpServer(val controller:PlayerController) {
           decodeRequest {
             entity(as[String]) { data =>
               val mydata = Json.parse(data)
-              val newname = (mydata \ "player").get.toString()
+              val newname = (mydata \ "name").get.toString()
+              println(newname)
               controller.rename(newname)
               complete("")
             }
