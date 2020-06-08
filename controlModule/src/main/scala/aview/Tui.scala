@@ -23,6 +23,7 @@ class Tui(controller: ControllerInterface) extends Reactor {
         processInputLine(input)
         winnerCheck = false
       }
+      printTui()
       println(controller.currentPlayer() + ", it is your turn!")
       input = StdIn.readLine() // stuck at this readline at the end of a gui-game
       processInputLine(input)

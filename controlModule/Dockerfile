@@ -4,6 +4,8 @@ EXPOSE 8080
 WORKDIR /connectfour
 ADD /target/scala-2.12/ControlModule-assembly-0.1.0-SNAPSHOT.jar /connectfour
 ENV DOCKERENV="TRUE"
+ENV PLAYER_HOST="myplayer:22222"
+ENV GRID_HOST="mygrid:11111"
 ENTRYPOINT ["java", "-jar", "ControlModule-assembly-0.1.0-SNAPSHOT.jar"]
 # Build it.
 RUN sbt compile

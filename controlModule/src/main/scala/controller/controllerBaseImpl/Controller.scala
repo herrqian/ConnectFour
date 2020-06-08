@@ -25,8 +25,11 @@ class Controller @Inject() extends ControllerInterface {
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
+  val gridHost = "http://" + sys.env.getOrElse("GRID_HOST", "localhost:11111") + "/"
+  val playerHost =  "http://" + sys.env.getOrElse("PLAYER_HOST", "localhost:22222") + "/"
+
   def createEmptyGrid(s: String): Unit = {
-    val url = "http://localhost:11111/grid/createEmptyGrid/" + s
+    val url = gridHost + "createEmptyGrid/" + s
     Controller.postNoResponseFromUrl(url)
     this.resetPlayerList()
     gameStatus = IDLE
@@ -34,12 +37,12 @@ class Controller @Inject() extends ControllerInterface {
   }
 
   def setValueToBottom(col:Int):Unit = {
-    val url = "http://localhost:11111/valueSetting"
+    val url = gridHost + "valueSetting"
     val data = Json.obj("col" -> col,
     "value"->getValueOfPlayer)
     val response = Controller.postResponseFromUrl(url, data)
     val jsonStringFuture = response.flatMap(r => Unmarshal(r.entity).to[String])
-    print("setValueToBottom" + response.toString)
+    //print("setValueToBottom" + response.toString)
     val jsonString = Await.result(jsonStringFuture, Duration(1, TimeUnit.SECONDS))
     val json = Json.parse(jsonString)
     (json \ "event").get.toString().replace("\"","") match {
@@ -56,13 +59,13 @@ class Controller @Inject() extends ControllerInterface {
   }
 
   def getValueOfPlayer:Int = {
-    val url = "http://localhost:22222/values"
+    val url = playerHost + "values"
     val jsonString = Controller.getValueResponseFromUrl(url)
     jsonString.toInt
   }
 
   def getGrid:JsValue = {
-    val url = "http://localhost:11111/grids"
+    val url = gridHost + "grids"
     val jsonString = Controller.getValueResponseFromUrl(url)
     Json.parse(jsonString)
   }
@@ -111,19 +114,19 @@ class Controller @Inject() extends ControllerInterface {
 
 
   def changeTurn(): Unit = {
-    val url = "http://localhost:22222/players/reserving"
+    val url = playerHost + "players/reserving"
     Controller.postNoResponseFromUrl(url)
   }
 
   def currentPlayer():String = {
-    val url = "http://localhost:22222/players"
+    val url = playerHost + "players"
     val jsonString = Controller.getValueResponseFromUrl(url)
     val json = Json.parse(jsonString)
     (json \ "player1").get.toString().replace("\"","")
   }
 
   def resetPlayerList(): Unit = {
-    val url = "http://localhost:22222/players/resetting"
+    val url = playerHost + "players/resetting"
     Controller.postNoResponseFromUrl(url)
   }
 
@@ -132,19 +135,19 @@ class Controller @Inject() extends ControllerInterface {
   def gridToHTML: String = printToHTML(getGrid)
 
   def undo: Unit = {
-    Controller.postNoResponseFromUrl("http://localhost:11111/undo")
+    Controller.postNoResponseFromUrl(gridHost + "undo")
     this.changeTurn()
     publish(new GridChanged)
   }
 
   def redo: Unit = {
-    Controller.postNoResponseFromUrl("http://localhost:11111/redo")
+    Controller.postNoResponseFromUrl(gridHost + "redo")
     this.changeTurn()
     publish(new GridChanged)
   }
 
   override def renamePlayer(newname: String): Unit = {
-    val url = "http://localhost:22222/players/rename"
+    val url = playerHost + "players/rename"
     val data = Json.obj({"name" -> newname})
     Controller.postResponseFromUrl(url, data)
   }
@@ -152,13 +155,13 @@ class Controller @Inject() extends ControllerInterface {
   override def getGameStatus() = gameStatus
 
   override def getGridRow: Int = {
-    val url = "http://localhost:22222/grids/rows"
+    val url = gridHost + "grids/rows"
     val jsonString = Controller.getValueResponseFromUrl(url)
     jsonString.toInt
   }
 
   override def getGridCol: Int = {
-    val url = "http://localhost:22222/gird/cols"
+    val url = gridHost + "gird/cols"
     val jsonString = Controller.getValueResponseFromUrl(url)
     jsonString.toInt
   }
@@ -176,7 +179,7 @@ class Controller @Inject() extends ControllerInterface {
     }
 
     def postResponseFromUrl(url: String, data: JsValue) : Future[HttpResponse] = {
-        println("yo")
+        //println("yo")
         Http().singleRequest(HttpRequest(
           method = HttpMethods.POST,
           uri = url,
