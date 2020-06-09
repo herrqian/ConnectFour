@@ -7,15 +7,15 @@ object PlayerMain {
     val httpserver = new PlayerHttpServer(playercontroller)
     @volatile var shutdown = false
 
-    def main(args: Array[String]): Unit = {
-      println("http://localhost:22222" + " is open")
+     def main(args: Array[String]): Unit = {
+      println("http://0.0.0.0:22222" + " is open")
       while (!shutdown) {
         Thread.sleep(1000)
         ;
       }
 
       httpserver.unbind
-      println("http://localhost:22222" + " is closed")
+      println("http://0.0.0.0:22222" + " is closed")
     }
 
     def shutdownServer(): Unit = shutdown = true

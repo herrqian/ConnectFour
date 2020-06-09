@@ -22,7 +22,8 @@ class PlayerHttpServer(val controller:PlayerController) {
           decodeRequest {
             entity(as[String]) { data =>
               val mydata = Json.parse(data)
-              val newname = (mydata \ "player").get.toString()
+              val newname = (mydata \ "name").get.toString()
+              println(newname)
               controller.rename(newname)
               complete("")
             }
@@ -48,7 +49,7 @@ class PlayerHttpServer(val controller:PlayerController) {
     },
   )
 
-  val bindingFuture = Http().bindAndHandle(route, "localhost", 22222)
+  val bindingFuture = Http().bindAndHandle(route, "0.0.0.0", 22222)
 
   def unbind = {
     bindingFuture

@@ -1,32 +1,22 @@
-//name := "Connect Four in scala"
-//
-//version := "0.1"
-//
-//scalaVersion := "2.12.7"
-//
-//libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.5"
-//libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % "test"
-//
-//libraryDependencies += "org.scala-lang.modules" % "scala-swing_2.12" % "2.0.3"
-//
-//libraryDependencies += "org.scala-lang.modules" % "scala-swing_2.12" % "2.0.1"
-//
-//libraryDependencies += "com.google.inject" % "guice" % "4.1.0"
-//
-//libraryDependencies += "net.codingwell" %% "scala-guice" % "4.1.0"
-//
-//libraryDependencies += "org.scala-lang.modules" % "scala-xml_2.12" % "1.0.6"
-//
-//libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.6"
-
 name := "connect four"
 organization in ThisBuild := "connect four in scala"
 scalaVersion in ThisBuild := "2.12.7"
 
 //PROJECTS
+val meta = """META.INF(.)*""".r
 
-lazy val global = project
-  .in(file("."))
+lazy val global = project.in(file("."))
+  .settings(
+    libraryDependencies ++= mainModuleDependencies,
+    assemblyMergeStrategy in assembly := {
+      case PathList("javax", "servlet", xs @ _*) => MergeStrategy.first
+      case PathList(ps @ _*) if ps.last endsWith ".html" => MergeStrategy.first
+      case n if n.startsWith("reference.conf") => MergeStrategy.concat
+      case n if n.endsWith(".conf") => MergeStrategy.concat
+      case meta(_) => MergeStrategy.discard
+      case x => MergeStrategy.first
+    }
+  )
   .aggregate(
     controlModule,
     playerModule,
@@ -35,18 +25,54 @@ lazy val global = project
 
 lazy val controlModule = project
   .settings(name := "ControlModule",
-    libraryDependencies ++= mainModuleDependencies)
+    libraryDependencies ++= mainModuleDependencies,
+    assemblyMergeStrategy in assembly := {
+      case PathList("javax", "servlet", xs @ _*) => MergeStrategy.first
+      case PathList(ps @ _*) if ps.last endsWith ".html" => MergeStrategy.first
+      case n if n.startsWith("reference.conf") => MergeStrategy.concat
+      case n if n.endsWith(".conf") => MergeStrategy.concat
+      case meta(_) => MergeStrategy.discard
+      case x => MergeStrategy.first
+    },
+    mainClass in assembly := Some("aview/ConnectFour") ,
+//    mainClass in (Compile, run) := Some("ConnectFour")
+
+
+  )
   .dependsOn(playerModule,modelModule)
   .aggregate(playerModule,modelModule)
 
 lazy val playerModule = project
   .settings(name := "PlayerModule",
-    libraryDependencies ++= mainModuleDependencies)
+    libraryDependencies ++= mainModuleDependencies,
+    assemblyMergeStrategy in assembly := {
+      case PathList("javax", "servlet", xs @ _*) => MergeStrategy.first
+      case PathList(ps @ _*) if ps.last endsWith ".html" => MergeStrategy.first
+      case n if n.startsWith("reference.conf") => MergeStrategy.concat
+      case n if n.endsWith(".conf") => MergeStrategy.concat
+      case meta(_) => MergeStrategy.discard
+      case x => MergeStrategy.first
+    }
+    ,
+    mainClass in assembly := Some("aview/PlayerMain"),
+//    mainClass in (Compile, run) := Some("aview/PlayerMain")
+  )
 
 
 lazy val modelModule = project
   .settings(name := "ModelModule",
-    libraryDependencies ++= mainModuleDependencies)
+    libraryDependencies ++= mainModuleDependencies,
+    assemblyMergeStrategy in assembly := {
+      case PathList("javax", "servlet", xs @ _*) => MergeStrategy.first
+      case PathList(ps @ _*) if ps.last endsWith ".html" => MergeStrategy.first
+      case n if n.startsWith("reference.conf") => MergeStrategy.concat
+      case n if n.endsWith(".conf") => MergeStrategy.concat
+      case meta(_) => MergeStrategy.discard
+      case x => MergeStrategy.first
+    },
+    mainClass in assembly := Some("aview/GridMain"),
+//    mainClass in (Compile, run) := Some("aview/GridMain")
+  )
   .dependsOn(playerModule)
 
 // DEPENDENCIES
@@ -97,3 +123,5 @@ lazy val mainModuleDependencies = Seq(
   "org.scalafx" %% "scalafx" % "11-R16",
   "com.typesafe.akka" %% "akka-http" % "10.0.7"
 )
+
+coverageExcludedPackages := ".*gui.*"

@@ -68,6 +68,7 @@ class GridHttpServer(controller: GridController) {
     },
     get {
       path("grids") {
+        println("i got a get-request from client")
         complete(HttpEntity(ContentTypes.`application/json`, controller.gridToJson.toString()))
       }~
       path("grids"/"rows") {
@@ -79,7 +80,7 @@ class GridHttpServer(controller: GridController) {
     },
   )
 
-  val bindingFuture = Http().bindAndHandle(route, "localhost", 11111)
+  val bindingFuture = Http().bindAndHandle(route, "0.0.0.0", 11111)
 
   def unbind = {
     bindingFuture

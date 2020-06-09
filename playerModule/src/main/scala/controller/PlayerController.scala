@@ -12,8 +12,11 @@ class PlayerController() {
   def rename(newname:String) = {
     if (playerslist(0).equals(player1)) {
       player1 = Player(newname)
+      playerslist = Array(player1, player2)
     } else {
       player2 = Player(newname)
+      playerslist(0) = player2
+      playerslist = Array(player2, player1)
     }
   }
 

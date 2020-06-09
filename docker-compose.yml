@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  main:
+    image: main-sbt:latest
+    hostname: connectfour
+    #working_dir: controlModule/src/main/scala/aview/ConnectFour.scala
+    tty: true
+    ports:
+      - "8080:8080"
+    depends_on:
+      - player
+      - grid
+    stdin_open: true
+    networks:
+      default:
+        aliases:
+          - mycontrol
+  player:
+    image: player-sbt:latest
+    #working_dir: playerModule/src/main/scala/aview/PlayerMain.scala
+    stdin_open: true
+    networks:
+      default:
+        aliases:
+          - myplayer
+  grid:
+    image: grid-sbt:latest
+    #working_dir: modelModule/src/main/scala/aview/GridMain.scala
+    stdin_open: true
+    networks:
+      default:
+        aliases:
+          - mygrid
