@@ -3,6 +3,7 @@ package aview
 import controller.PlayerController
 
 object PlayerMain {
+
     val playercontroller = new PlayerController()
     val httpserver = new PlayerHttpServer(playercontroller)
     @volatile var shutdown = false
