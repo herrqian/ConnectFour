@@ -15,22 +15,22 @@ import scala.util.{Failure, Success}
 
 class GridHttpServer(controller: GridController) {
 
-  implicit val system:ActorSystem = ActorSystem("my-system")
-  implicit val materializer:ActorMaterializer = ActorMaterializer()
-  implicit  val executionContext: ExecutionContextExecutor = system.dispatcher
+  implicit val system: ActorSystem = ActorSystem("my-system")
+  implicit val materializer: ActorMaterializer = ActorMaterializer()
+  implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
-  val route:Route =concat(
+  val route: Route = concat(
     post {
-      path("grid" / "createEmptyGrid"/ "GridSmall") {
+      path("grid" / "createEmptyGrid" / "GridSmall") {
         println("i got a request")
         controller.createEmtpyField("Grid Small")
         complete(HttpEntity(ContentTypes.`application/json`, Json.obj("event" -> "GridSizeChanged").toString()))
       } ~
-        path("grid" / "createEmptyGrid"/ "GridMiddle") {
+        path("grid" / "createEmptyGrid" / "GridMiddle") {
           controller.createEmtpyField("Grid Middle")
           complete(HttpEntity(ContentTypes.`application/json`, Json.obj("event" -> "GridSizeChanged").toString()))
         } ~
-        path("grid" / "createEmptyGrid"/ "GridLarge") {
+        path("grid" / "createEmptyGrid" / "GridLarge") {
           controller.createEmtpyField("Grid Large")
           complete(HttpEntity(ContentTypes.`application/json`, Json.obj("event" -> "GridSizeChanged").toString()))
         } ~
@@ -43,40 +43,52 @@ class GridHttpServer(controller: GridController) {
               val value = (mydata \ "value").get.toString().toInt
               controller.setValueToBottom(col, value) match {
                 case Success(row) => {
-                  if (controller.checkWinner(row,col,value)) {
-                    complete(HttpEntity(ContentTypes.`application/json`, Json.obj("event"-> "WIN").toString()))
+                  if (controller.checkWinner(row, col, value)) {
+                    complete(HttpEntity(ContentTypes.`application/json`, Json.obj("event" -> "WIN").toString()))
                   } else {
                     complete(HttpEntity(ContentTypes.`application/json`,
-                      Json.obj("event"-> "CellChanged", "row" -> row,"col" -> col,"value"->value).toString()))
+                      Json.obj("event" -> "CellChanged", "row" -> row, "col" -> col, "value" -> value).toString()))
                   }
 
                 }
-                case Failure(exception) => {complete(HttpEntity(ContentTypes.`application/json`,
-                  Json.obj("event"-> "SetError", "error" -> exception.toString).toString()))}
+                case Failure(exception) => {
+                  complete(HttpEntity(ContentTypes.`application/json`,
+                    Json.obj("event" -> "SetError", "error" -> exception.toString).toString()))
+                }
               }
             }
           }
         } ~
-      path("undo") {
-        controller.undo
-        complete("")
-      }~
-      path("redo") {
-        controller.redo
-        complete("")
-      }
+        path("undo") {
+          controller.undo
+          complete("")
+        } ~
+        path("redo") {
+          controller.redo
+          complete("")
+        }
     },
     get {
       path("grids") {
         println("i got a get-request from client")
+        println(controller.gridToJson.toString())
+        println("grid to json")
         complete(HttpEntity(ContentTypes.`application/json`, controller.gridToJson.toString()))
-      }~
-      path("grids"/"rows") {
-        complete(controller.grid.rows.toString)
       } ~
-      path("grids"/ "cols") {
-        complete(controller.grid.cols.toString)
-      }
+        path("grids" / "rows") {
+          complete(controller.grid.rows.toString)
+        } ~
+        path("grids" / "cols") {
+          complete(controller.grid.cols.toString)
+        } ~
+        path("save") {
+          controller.save(controller.grid.rows, controller.grid.cols, controller.grid.toString)
+          complete("")
+        } ~
+        path("load") {
+          controller.load()
+          complete("")
+        }
     },
   )
 

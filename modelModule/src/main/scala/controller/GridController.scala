@@ -1,16 +1,22 @@
 package controller
 
+import aview.GridModule
+import com.google.inject.{Guice, Injector}
 import main.scala.model.gridComponent.GridInterface
 import main.scala.model.gridComponent.gridAdvancedImpl.Grid
 import main.scala.model.gridComponent.gridBaseImpl.{Cell, Field}
+import model.daoComponent.DAOInterface
+import model.daoComponent.slickImpl.SlickDao
 import play.api.libs.json.{JsNumber, JsObject, Json}
 import util.UndoManager
 
 import scala.util.{Failure, Success, Try}
 
-class GridController(var grid :GridInterface) {
+class GridController(var grid: GridInterface) {
 
+  val injector: Injector = Guice.createInjector(new GridModule)
   private val undoManager = new UndoManager
+  var db: DAOInterface = new SlickDao
 
   object Grids extends Enumeration {
     type Grids = Value
@@ -19,15 +25,18 @@ class GridController(var grid :GridInterface) {
     val large = Value("Grid Large").toString
   }
 
-  def createEmtpyField(size:String): Unit = {
+  def createEmtpyField(size: String): Unit = {
     size match {
       case Grids.small =>
-        grid = new Grid(6,7)
+        grid = new Grid(6, 7)
       case Grids.middle =>
-        grid =new Grid(10,11)
+        grid = new Grid(10, 11)
       case Grids.large =>
-        grid = new Grid(16,17)
+        grid = new Grid(16, 17)
     }
+    println("create")
+    println(grid.rows)
+    //println(grid)
   }
 
 
@@ -53,27 +62,41 @@ class GridController(var grid :GridInterface) {
     }
   }
 
-  def undo:Unit = {
+  def undo: Unit = {
     undoManager.undoStep
   }
 
-  def redo:Unit = {
+  def redo: Unit = {
     undoManager.redoStep
   }
 
+  def save(rows:Int,cols:Int,grid:String):Unit = db.saveGrid(rows,cols,grid)
+
+  def load() = {
+    val result = db.loadLastGrid
+    val a_grid = result._4
+    val rows:Array[Array[String]] = a_grid.split("\r\n").map(_.trim).toArray.map(row => row.stripPrefix(" ").split(" ").map(_.trim).toArray)
+    grid = new Grid(result._2,result._3)
+    for (row <- 0 to result._2 - 1;
+         col <- 0 to result._3 - 1) {
+      grid = grid.set(row,col, rows(row)(col).toInt)
+    }
+    //println(grid)
+  }
+
   def gridToJson: JsObject = Json.obj(
-    "size" -> JsNumber(grid.rows * grid.cols),
-    "rows" -> JsNumber(grid.rows),
-    "cols" -> JsNumber(grid.cols),
+    "size" -> JsNumber(this.grid.rows * this.grid.cols),
+    "rows" -> JsNumber(this.grid.rows),
+    "cols" -> JsNumber(this.grid.cols),
     "cells" -> Json.toJson(
       for {
-        row <- 0 until grid.rows
-        col <- 0 until grid.cols
+        row <- 0 until this.grid.rows
+        col <- 0 until this.grid.cols
       } yield {
         Json.obj(
           "row" -> row,
           "col" -> col,
-          "cell" -> Json.toJson(grid.cell(row, col))
+          "cell" -> Json.toJson(this.grid.cell(row, col))
         )
       }
     )
