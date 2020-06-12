@@ -17,6 +17,8 @@ object PlayerMain {
 
       httpserver.unbind
       println("http://0.0.0.0:22222" + " is closed")
+
+
     }
 
     def shutdownServer(): Unit = shutdown = true

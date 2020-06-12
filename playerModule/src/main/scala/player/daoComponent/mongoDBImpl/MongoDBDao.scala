@@ -1,5 +1,8 @@
 package player.daoComponent.mongoDBImpl
 
+import java.lang.Math.toIntExact
+import java.time.Instant
+
 import com.google.inject.Inject
 import player.daoComponent.DAOInterface
 import org.mongodb.scala.bson.codecs.Macros._
@@ -22,11 +25,12 @@ class MongoDBDao@Inject extends DAOInterface {
   private val codecRegistry = fromRegistries(customCodecs, DEFAULT_CODEC_REGISTRY)
   private val db: MongoDatabase = client.getDatabase("myDB").withCodecRegistry(codecRegistry)
 
-  private val players: MongoCollection[Player] = db.getCollection("Players")
-
+  val players: MongoCollection[Player] = db.getCollection("Players")
+  val time: Long = Instant.now.getEpochSecond
+  val bar: Int = toIntExact(time)
 
   override def savePlayersList(player1: String, player2: String): Unit = {
-    Await.result(players.insertOne(Player(0,player1,player2)).toFuture(), 5 seconds)
+    Await.result(players.insertOne(Player(bar, player1, player2)).toFuture(), 5 seconds)
   }
 
   override def loadLastPlayersList(): (Int, String, String) = {
@@ -39,6 +43,7 @@ class MongoDBDao@Inject extends DAOInterface {
     )
     return null
   }
+
 
   case class Player(id: Int, player1: String, player2: String)
 }

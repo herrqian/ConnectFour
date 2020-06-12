@@ -7,3 +7,8 @@ This is a project developed in Scalalang by herrqian and Animesh for the lecture
 
 ## Description:
 Two players play against each other on a 6x7, 10x11 or 16x17 board. Each player has a different colour and aims to make a straight line of four pieces, which can be vertical, horizontal or diagonal.
+
+## Note:
+If using MongoDB please make sure that version 4.2 is installed and follow this path syntax to connect to Local MongoDB server.
+
+_"C:\Program Files\MongoDB\Server\4.2\bin\mongod.exe" --dbpath="c:\data\db"_
