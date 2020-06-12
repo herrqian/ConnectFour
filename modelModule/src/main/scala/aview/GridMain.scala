@@ -1,5 +1,6 @@
 package aview
 
+import com.google.inject.{Guice, Injector}
 import controller.GridController
 import main.scala.model.gridComponent.gridAdvancedImpl.Grid
 

@@ -168,9 +168,17 @@ class Controller @Inject() extends ControllerInterface {
     jsonString.toInt
   }
 
-  override def save: Unit = {}
+  override def save: Unit = {
+    Controller.getValueResponseFromUrl(gridHost+"save")
+    Controller.getValueResponseFromUrl(playerHost+ "save")
+    publish(new GridChanged)
+  }
 
-  override def load: Unit = {}
+  override def load: Unit = {
+    Controller.getValueResponseFromUrl(gridHost+"load")
+    Controller.getValueResponseFromUrl(playerHost+"load")
+    publish(new GridChanged)
+  }
 
   object Controller {
 

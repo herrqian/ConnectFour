@@ -121,7 +121,10 @@ lazy val mainModuleDependencies = Seq(
   "com.typesafe.play" %% "play-json" % "2.6.6",
   "org.scala-lang.modules" % "scala-swing_2.12" % "2.0.3",
   "org.scalafx" %% "scalafx" % "11-R16",
-  "com.typesafe.akka" %% "akka-http" % "10.0.7"
+  "com.typesafe.akka" %% "akka-http" % "10.0.7",
+  "com.typesafe.slick" %% "slick" % "3.3.2",
+  "com.h2database" % "h2" % "1.4.199",
+  "org.mongodb.scala" %% "mongo-scala-driver" % "2.6.0"
 )
 
 coverageExcludedPackages := ".*gui.*"

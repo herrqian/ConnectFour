@@ -45,6 +45,14 @@ class PlayerHttpServer(val controller:PlayerController) {
       }~
       path("values") {
         complete(controller.valueOfCurrentPlayer().toString)
+      } ~
+      path("save") {
+        controller.save()
+        complete("")
+      }~
+      path("load") {
+        controller.load()
+        complete("")
       }
     },
   )
