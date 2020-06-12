@@ -6,11 +6,12 @@ import play.api.libs.json.{JsValue, Json}
 import player.Player
 import player.daoComponent.DAOInterface
 import player.daoComponent.slickImpl.SlickDao
+import player.daoComponent.mongoDBImpl.MongoDBDao
 
 class PlayerController() {
 
   val injector: Injector = Guice.createInjector(new PlayersModule)
-  val db: DAOInterface = new SlickDao
+  val db: DAOInterface = new MongoDBDao
   var player1 = Player("Player1")
   var player2 = Player("Player2")
   var playerslist = Array(player1, player2)

@@ -6,6 +6,7 @@ import main.scala.model.gridComponent.GridInterface
 import main.scala.model.gridComponent.gridAdvancedImpl.Grid
 import main.scala.model.gridComponent.gridBaseImpl.{Cell, Field}
 import model.daoComponent.DAOInterface
+import model.daoComponent.mongoDBImpl.MongoDBDao
 import model.daoComponent.slickImpl.SlickDao
 import play.api.libs.json.{JsNumber, JsObject, Json}
 import util.UndoManager
@@ -16,7 +17,7 @@ class GridController(var grid: GridInterface) {
 
   val injector: Injector = Guice.createInjector(new GridModule)
   private val undoManager = new UndoManager
-  var db: DAOInterface = new SlickDao
+  var db: DAOInterface = new MongoDBDao
 
   object Grids extends Enumeration {
     type Grids = Value

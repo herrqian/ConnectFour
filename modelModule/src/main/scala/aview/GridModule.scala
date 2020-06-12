@@ -7,6 +7,7 @@ import main.scala.fileIOComponent.fileIoJsonImpl.FileIO
 import main.scala.model.gridComponent.GridInterface
 import main.scala.model.gridComponent.gridAdvancedImpl.Grid
 import model.daoComponent.DAOInterface
+import model.daoComponent.mongoDBImpl.MongoDBDao
 import net.codingwell.scalaguice.ScalaModule
 import model.daoComponent.slickImpl
 
@@ -20,7 +21,7 @@ class GridModule extends AbstractModule with ScalaModule {
     bindConstant().annotatedWith(Names.named("DefaultCols")).to(defaultCols)
     bind[GridInterface].to[Grid]
     bind[FileIOInterface].to[FileIO]
-    bind[DAOInterface].to[slickImpl.SlickDao]
+    bind[DAOInterface].to[MongoDBDao]
   }
 
 

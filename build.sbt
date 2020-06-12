@@ -124,6 +124,7 @@ lazy val mainModuleDependencies = Seq(
   "com.typesafe.akka" %% "akka-http" % "10.0.7",
   "com.typesafe.slick" %% "slick" % "3.3.2",
   "com.h2database" % "h2" % "1.4.199",
+  "org.mongodb.scala" %% "mongo-scala-driver" % "2.6.0"
 )
 
 coverageExcludedPackages := ".*gui.*"
