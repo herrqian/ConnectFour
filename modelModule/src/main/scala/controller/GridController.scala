@@ -35,8 +35,8 @@ class GridController(var grid: GridInterface) {
       case Grids.large =>
         grid = new Grid(16, 17)
     }
-    println("create")
-    println(grid.rows)
+    //println("create")
+    //println(grid.rows)
     //println(grid)
   }
 
@@ -76,10 +76,10 @@ class GridController(var grid: GridInterface) {
   def load() = {
     val result = db.loadLastGrid
     val a_grid = result._4
-    val rows:Array[Array[String]] = a_grid.split("\r\n").map(_.trim).toArray.map(row => row.stripPrefix(" ").split(" ").map(_.trim).toArray)
+    val rows:Array[Array[String]] = a_grid.split(System.lineSeparator()).map(_.trim).map(row => row.stripPrefix(" ").split(" ").map(_.trim))
     grid = new Grid(result._2,result._3)
-    for (row <- 0 to result._2 - 1;
-         col <- 0 to result._3 - 1) {
+    for (row <- 0 until result._2 ;
+         col <- 0 until result._3 ) {
       grid = grid.set(row,col, rows(row)(col).toInt)
     }
     //println(grid)
