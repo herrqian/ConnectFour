@@ -36,7 +36,7 @@ class HttpServer(controller: Controller) {
       }
   }
 
-  val bindingFuture = Http().bindAndHandle(route, "0.0.0.0", 8080)
+  val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)
 
   def unbind = {
     bindingFuture

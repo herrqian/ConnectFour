@@ -22,6 +22,7 @@ lazy val global = project.in(file("."))
     playerModule,
     modelModule
   )
+  .enablePlugins(GatlingPlugin)
 
 lazy val controlModule = project
   .settings(name := "ControlModule",
@@ -39,6 +40,7 @@ lazy val controlModule = project
 
 
   )
+  .enablePlugins(GatlingPlugin)
   .dependsOn(playerModule,modelModule)
   .aggregate(playerModule,modelModule)
 
@@ -124,7 +126,9 @@ lazy val mainModuleDependencies = Seq(
   "com.typesafe.akka" %% "akka-http" % "10.0.7",
   "com.typesafe.slick" %% "slick" % "3.3.2",
   "com.h2database" % "h2" % "1.4.199",
-  "org.mongodb.scala" %% "mongo-scala-driver" % "2.6.0"
+  "org.mongodb.scala" %% "mongo-scala-driver" % "2.6.0",
+  "io.gatling.highcharts" % "gatling-charts-highcharts" % "3.0.0" % "test",
+  "io.gatling"            % "gatling-test-framework"    % "3.0.0" % "test"
 )
 
 coverageExcludedPackages := ".*gui.*"

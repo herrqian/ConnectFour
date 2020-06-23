@@ -11,7 +11,7 @@ import player.daoComponent.mongoDBImpl.MongoDBDao
 class PlayerController() {
 
   val injector: Injector = Guice.createInjector(new PlayersModule)
-  val db: DAOInterface = new MongoDBDao
+  val db: DAOInterface = new SlickDao
   var player1 = Player("Player1")
   var player2 = Player("Player2")
   var playerslist = Array(player1, player2)
