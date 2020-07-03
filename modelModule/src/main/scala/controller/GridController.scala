@@ -26,19 +26,30 @@ class GridController(var grid: GridInterface) {
     val large = Value("Grid Large").toString
   }
 
+  val gridMap =Map(Grids.small -> new Grid(6,7),
+    Grids.middle -> new Grid(10, 11),
+    Grids.large -> new Grid(16,17))
+
   def createEmtpyField(size: String): Unit = {
-    size match {
-      case Grids.small =>
-        grid = new Grid(6, 7)
-      case Grids.middle =>
-        grid = new Grid(10, 11)
-      case Grids.large =>
-        grid = new Grid(16, 17)
-    }
-    println("create")
-    println(grid.rows)
+    grid = gridMap(size)
+    //println("create")
+    //println(grid.rows)
     //println(grid)
   }
+
+//  def createEmtpyField(size: String): Unit = {
+//    size match {
+//      case Grids.small =>
+//        grid = new Grid(6, 7)
+//      case Grids.middle =>
+//        grid = new Grid(10, 11)
+//      case Grids.large =>
+//        grid = new Grid(16, 17)
+//    }
+//    println("create")
+//    println(grid.rows)
+//    //println(grid)
+//  }
 
 
   def setValueToBottom(column: Int, value: Int): Try[Int] = {
@@ -76,10 +87,15 @@ class GridController(var grid: GridInterface) {
   def load() = {
     val result = db.loadLastGrid
     val a_grid = result._4
-    val rows:Array[Array[String]] = a_grid.split("\r\n").map(_.trim).toArray.map(row => row.stripPrefix(" ").split(" ").map(_.trim).toArray)
-    grid = new Grid(result._2,result._3)
-    for (row <- 0 to result._2 - 1;
-         col <- 0 to result._3 - 1) {
+    val rows:Array[Array[String]] = a_grid.split(System.lineSeparator()).map(_.trim).map(row => row.stripPrefix(" ").split(" ").map(_.trim))
+    val size = result._2 * result._3
+    grid = size match {
+      case 42 => gridMap("Grid Small")
+      case 110 => gridMap("Grid Middle")
+      case 272 => gridMap("Grid Large")
+    }
+    for (row <- 0 until result._2 ;
+         col <- 0 until result._3 ) {
       grid = grid.set(row,col, rows(row)(col).toInt)
     }
     //println(grid)
