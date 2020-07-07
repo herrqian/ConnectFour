@@ -4,7 +4,9 @@ import com.google.inject.Inject
 import model.daoComponent.DAOInterface
 import slick.jdbc.H2Profile.api._
 
-import scala.concurrent.Await
+import scala.util.{Failure, Success}
+import scala.concurrent._
+import ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 
 class SlickDao@Inject() extends DAOInterface{
@@ -16,7 +18,14 @@ class SlickDao@Inject() extends DAOInterface{
   db.run(DBIO.seq(grids.schema.create))
 
   override def saveGrid(rows:Int,cols:Int,grid:String): Unit = {
-    db.run(grids += (0,rows,cols,grid))
+    val f = db.run(grids += (0,rows,cols,grid))
+    f.onComplete {
+      case Success(_) => println("save succeed")
+      case Failure(_) => {
+        Thread.sleep(1000)
+        saveGrid(rows,cols,grid)
+      }
+    }
   }
 
 
@@ -24,6 +33,7 @@ class SlickDao@Inject() extends DAOInterface{
     val query = db.run(grids.sortBy(_.id.desc).result.headOption)
     Await.result(query, Duration.Inf).get
   }
+
 }
 
 

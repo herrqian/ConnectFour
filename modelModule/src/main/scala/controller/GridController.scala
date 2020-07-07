@@ -17,7 +17,7 @@ class GridController(var grid: GridInterface) {
 
   val injector: Injector = Guice.createInjector(new GridModule)
   private val undoManager = new UndoManager
-  var db: DAOInterface = new MongoDBDao
+  var db: DAOInterface = new SlickDao
 
   object Grids extends Enumeration {
     type Grids = Value
