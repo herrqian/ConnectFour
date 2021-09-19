@@ -1,8 +1,6 @@
 # HTWG_SA_ConnectFour
 [![Build Status](https://travis-ci.org/herrqian/HTWG_SA_ConnectFour.svg?branch=master)](https://travis-ci.org/herrqian/HTWG_SA_ConnectFour)
 
-[![Coverage Status](https://coveralls.io/repos/github/herrqian/HTWG_SA_ConnectFour/badge.svg?branch=functional_style)](https://coveralls.io/github/herrqian/HTWG_SA_ConnectFour?branch=functional_style)
-
 This is a project developed in Scala by Jing Qian and Animesh Sharma for the lecture Software Engineering at the HTWG Konstanz.
 
 ## Description:
