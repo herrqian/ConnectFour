@@ -3,7 +3,7 @@
 
 [![Coverage Status](https://coveralls.io/repos/github/herrqian/HTWG_SA_ConnectFour/badge.svg?branch=functional_style)](https://coveralls.io/github/herrqian/HTWG_SA_ConnectFour?branch=functional_style)
 
-This is a project developed in Scalalang by herrqian and Animesh for the lecture Software Engineering in Constance at the HTWG.
+This is a project developed in Scala by Jing Qian and Animesh Sharma for the lecture Software Engineering at the HTWG Konstanz.
 
 ## Description:
 Two players play against each other on a 6x7, 10x11 or 16x17 board. Each player has a different colour and aims to make a straight line of four pieces, which can be vertical, horizontal or diagonal.
